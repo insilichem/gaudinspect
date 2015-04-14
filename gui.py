@@ -2,31 +2,38 @@
 import chimera
 from chimera.baseDialog import ModelessDialog
 from chimera import tkgui, triggerSet
-import Tkinter, Pmw, Tix
+import Tkinter
+import Pmw
+import Tix
 
 import base
 import gaudi
 
+
 ui = None
+
+
 def showUI(callback=None):
-	global ui
-	if not ui:
-		ui = GAUDInspect()
-	ui.enter()
-	if callback:
-		ui.addCallback(callback)
+    global ui
+    if not ui:
+        ui = GAUDInspectDialog()
+    ui.enter()
+    if callback:
+        ui.addCallback(callback)
+
 
 class GAUDInspectDialog(ModelessDialog):
-	buttons = ("OK", "Close")
-	default = None
-	help = "https://bitbucket.org/jrgp/gaudinspect"
-	SELECTION_CHANGED = "GAUDInspectSelectionChanged"
-	DBL_CLICK = "GAUDInspectDoubleClick"
-	EXIT = "GAUDInspectExited"
+    buttons = ("OK", "Close")
+    default = None
+    help = "https://bitbucket.org/jrgp/gaudinspect"
+    SELECTION_CHANGED = "GAUDInspectSelectionChanged"
+    DBL_CLICK = "GAUDInspectDoubleClick"
+    EXIT = "GAUDInspectExited"
 
-	def __init__(self, path, format, *args, **kw):
+    def __init__(self, *args, **kw):
 
-		# GUI init
-		self.title = 'GAUDInspect - {}'.format(path)
-		ModelessDialog.__init__(self)
-		chimera.extension.manager.registerInstance(self)
+        # GUI init
+        self.title = 'GAUDInspect'
+        ModelessDialog.__init__(self)
+        chimera.extension.manager.registerInstance(self)
+        print self.title, "GUI entered"
