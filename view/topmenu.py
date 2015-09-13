@@ -22,6 +22,8 @@ class GAUDInspectViewTopMenu(object):
         self.parent.menu_file.addAction('Import state')
         self.parent.menu_file.addAction('Export state')
         self.parent.menu_file.addSeparator()
+        self.parent.menu_file.addAction('Load results')
+        self.parent.menu_file.addSeparator()
         self.parent.menu_file.addAction('Exit')
 
         # Top menu - Edit
@@ -30,6 +32,13 @@ class GAUDInspectViewTopMenu(object):
         self.parent.menu_edit.addAction('Project file (advanced)')
         self.parent.menu_edit.addSeparator()
         self.parent.menu_edit.addAction('Configuration')
+
+        # Top menu - Viewer
+        self.parent.menu_viewer = self.parent.menuBar().addMenu("&Viewer")
+        self.parent.menu_viewer.addAction('Enable effects')
+        self.parent.menu_viewer.addAction('Disable effects')
+        self.parent.menu_viewer.addSeparator()
+        self.parent.menu_viewer.addAction('Configuration')
 
         # Top menu - Controls
         self.parent.menu_controls = self.parent.menuBar().addMenu("&Controls")

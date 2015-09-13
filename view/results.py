@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PySide import QtGui
+from PySide.QtCore import Qt
 
 
 def get(parent=None):
@@ -22,14 +23,17 @@ class GAUDInspectViewResults(QtGui.QWidget):
         ###
         self.grid = QtGui.QGridLayout(self)
 
-        self.table = QtGui.QTableWidget(30, 7)
+        self.table = QtGui.QTableView()
         self.grid.addWidget(self.table, 0, 0)
-        table_headers = ['Individual',
-                         'Objective 1', 'Objective 2', 'Objective 3',
-                         'Objective 4', 'Objective 5', 'Objective 6', ]
-        self.table.setHorizontalHeaderLabels(table_headers)
+        # Configure table
         self.table.verticalHeader().setVisible(False)
-
+        self.table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
+        self.table.setSortingEnabled(True)
+        self.table.setAlternatingRowColors(True)
+        self.table.setShowGrid(False)
+        self.table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.table.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
+        # Add filter widget
         self.filter_group = GAUDInspectViewResultsFilter('Filter results')
         self.grid.addWidget(self.filter_group, 1, 0)
 

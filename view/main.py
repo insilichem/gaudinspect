@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from PySide import QtGui, QtCore
+from PySide import QtGui, QtCore, QtOpenGL
 from . import viewer, topmenu, tabber
 
 
@@ -10,6 +10,8 @@ class GAUDInspectView(QtGui.QMainWindow):
     def __init__(self):
         super(GAUDInspectView, self).__init__()
         self.setWindowIcon(QtGui.QIcon('icon.png'))
+        self.glcontext = QtOpenGL.QGLContext(QtOpenGL.QGLFormat())
+
         self.initUI()
         self.show()
 
@@ -25,7 +27,7 @@ class GAUDInspectView(QtGui.QMainWindow):
 
         # Main layout
         self.menu = topmenu.get(self)
-        self.viewer = viewer.get(self)
+        self.viewer = viewer.get(self.glcontext, self)
         self.tabber = tabber.get(self)
         self.statusbar = self.statusBar()
         self.splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
