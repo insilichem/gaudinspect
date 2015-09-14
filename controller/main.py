@@ -5,6 +5,15 @@ from PySide.QtCore import Qt
 from chemlab.io import datafile
 import subprocess
 from chemlab.graphics import colors
+import os
+import numpy as np
+
+if os.name == 'nt':
+    BABEL = 'C:/Program Files (x86)/OpenBabel-2.3.2/babel.exe'
+elif os.name == 'posix':
+    BABEL = 'babel'
+else:
+    BABEL = input('Please specify path to babel binary:\n')
 
 
 class GAUDInspectController(object):
@@ -33,18 +42,17 @@ class GAUDInspectController(object):
             self.add_to_viewer(*mol2)
 
     def add_to_viewer(self, *paths):
+        all_coords = []
         for i, path in enumerate(paths):
             if i % 2:
                 color_scheme = colors.default_atom_map
             else:
                 color_scheme = colors.light_atom_map
-            pdb = path[:-4] + 'mol'
-            cmd = [
-                'C:/Program Files (x86)/OpenBabel-2.3.2/babel.exe', path, pdb]
-            subprocess.call(cmd)
-            mol = datafile(pdb).read('molecule')
+            mol = datafile(path).read('molecule')
 
             self.view.viewer.add_molecule(
                 mol.r_array, mol.type_array, mol.bonds, color=color_scheme)
-            self.view.viewer.camera.autozoom(mol.r_array)
+            all_coords.append(mol.r_array)
             self.view.viewer.update()
+
+        self.view.viewer.camera.autozoom(np.concatenate(all_coords))

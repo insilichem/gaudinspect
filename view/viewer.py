@@ -21,6 +21,7 @@ class GAUDInspectViewViewer(QChemlabWidget):
         super(GAUDInspectViewViewer, self).__init__(context, parent)
         self.parent = parent
         context.makeCurrent()
+        self.initializeGL()
         self.initUI()
 
     def initUI(self):
@@ -94,11 +95,13 @@ class GAUDInspectViewViewer(QChemlabWidget):
         return pp
 
     def enable_effects(self):
-        self.add_post_processing(SSAOEffect)  # better illumination
+        # better illumination
+        self.add_post_processing(
+            SSAOEffect, kernel_size=128, kernel_radius=1.0)
         self.add_post_processing(OutlineEffect)  # black outlines
         self.add_post_processing(FXAAEffect)  # fast antialiasing
         self.update()
 
     def disable_effects(self):
-        self.post_processing = []
+        del self.post_processing[:]
         self.update()

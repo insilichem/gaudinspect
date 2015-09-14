@@ -88,7 +88,7 @@ class GAUDInspectModelOut(QStandardItemModel):
             z.extractall(tmp)
             mol2 = []
             meta = z.namelist()
-            for name in os.listdir(tmp):
+            for name in sorted(os.listdir(tmp)):
                 absname = os.path.join(tmp, name)
                 if name.endswith(".mol2"):
                     mol2.append(os.path.normpath(absname))
