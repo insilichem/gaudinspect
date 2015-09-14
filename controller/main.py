@@ -3,17 +3,8 @@
 
 from PySide.QtCore import Qt
 from chemlab.io import datafile
-import subprocess
 from chemlab.graphics import colors
-import os
 import numpy as np
-
-if os.name == 'nt':
-    BABEL = 'C:/Program Files (x86)/OpenBabel-2.3.2/babel.exe'
-elif os.name == 'posix':
-    BABEL = 'babel'
-else:
-    BABEL = input('Please specify path to babel binary:\n')
 
 
 class GAUDInspectController(object):
