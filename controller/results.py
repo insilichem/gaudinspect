@@ -11,12 +11,12 @@ class GAUDInspectResultsController(object):
     def __init__(self, model, view, renderer='ballandstick', color='default'):
         # Models
         self.model = model
-        self = CustomSortingModel(self.model)  # fix numerical sorting
-        self.setSourceModel(self.model)
+        self.proxy = CustomSortingModel(self.model)  # fix numerical sorting
+        self.proxy.setSourceModel(self.model)
         # Tie them up
         self.view = view
         self.tableview = self.view.tabber.tabs[3].table
-        self.tableview.setModel(self.proxy_model)
+        self.tableview.setModel(self.proxy)
         self.tableview.sortByColumn(0, Qt.AscendingOrder)
         # Some parameters
         self.renderer = renderer
@@ -38,7 +38,8 @@ class GAUDInspectResultsController(object):
             for i in s.indexes():
                 # we only want cells in first column: the zip filename
                 if i.column() == 0:
-                    # Get item from original model, not proxy
+                    # Get item from original model, not proxy!
+                    # Just use mapToSource instead of itemFromIndex
                     item = self.proxy.mapToSource(i)
                     mol2, meta = self.model.parse_zip(item.data())
                     for m, color in zip(mol2, cycle(self.colors)):
