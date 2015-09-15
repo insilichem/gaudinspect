@@ -3,12 +3,13 @@
 
 from PySide import QtGui
 from PySide.QtCore import Qt
-from chemlab.graphics import QChemlabWidget, colors
-from chemlab.graphics.renderers import BallAndStickRenderer
 
-from chemlab.graphics.postprocessing import SSAOEffect
-from chemlab.graphics.postprocessing import OutlineEffect
-from chemlab.graphics.postprocessing import FXAAEffect
+import numpy as np
+
+from chemlab.graphics import QChemlabWidget, colors
+from chemlab.graphics.renderers import BallAndStickRenderer, AtomRenderer
+from chemlab.graphics.postprocessing import SSAOEffect, OutlineEffect, FXAAEffect
+from chemlab.io import datafile
 
 
 def get(context, parent=None):
@@ -16,10 +17,20 @@ def get(context, parent=None):
 
 
 class GAUDInspectViewViewer(QChemlabWidget):
+    RENDERERS = {
+        'ballandstick': BallAndStickRenderer,
+        'sphere': AtomRenderer
+    }
+
+    COLORS = {
+        'default': colors.default_atom_map,
+        'light': colors.light_atom_map
+    }
 
     def __init__(self, context, parent=None):
         super(GAUDInspectViewViewer, self).__init__(context, parent)
         self.parent = parent
+        self.molecules = {}
         context.makeCurrent()
         self.initializeGL()
         self.initUI()
@@ -30,14 +41,30 @@ class GAUDInspectViewViewer(QChemlabWidget):
                            QtGui.QSizePolicy.Preferred)
         self.background_color = (0, 0, 0, 0)
 
-    def add_molecule(self, positions, types, bonds, color=colors.default_atom_map):
-        r = BallAndStickRenderer(
-            self, positions, types, bonds, color_scheme=color)
+    # Controller methods
+    def add_molecule(self, path, renderer='ballandstick',
+                     color='default'):
+        mol = datafile(path).read('molecule')
+        self.molecules[path] = mol
+        r = self.RENDERERS[renderer](self, mol.r_array, mol.type_array,
+                                     mol.bonds, color_scheme=self.COLORS[color])
+        mol.renderer = r
         self.renderers.append(r)
+        self.update()
 
-    def clear_view(self):
-        self.renderers = []
+    def focus(self, molecules=None):
+        if not molecules:
+            molecules = self.molecules.keys()
+        coords = []
+        for m in molecules:
+            coords.append(self.molecules[m].r_array)
+        self.camera.autozoom(np.concatenate(coords))
 
+    def clear(self):
+        del self.renderers[:]
+        self.molecules.clear()
+
+    # ####
     # Redefine some QChemlabWidget methods
     def mouseMoveEvent(self, evt):
         if self._last_mouse_right:

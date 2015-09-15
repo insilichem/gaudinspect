@@ -2,13 +2,13 @@
 # -*- coding: utf-8 -*-
 
 # Python
-from collections import OrderedDict
 import zipfile
 import tempfile
 import os
 # External dependencies
 import yaml
 from PySide.QtGui import QStandardItemModel, QStandardItem
+from PySide import QtCore
 
 
 def GAUDInspectModel(path):

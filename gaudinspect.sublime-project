@@ -8,6 +8,9 @@
                 ".*",
                 "*.sublime*",
                 "*.pyc"
+            ],
+             "folder_exclude_patterns":[
+             	"__pycache__"
             ]
 		}
 	]
