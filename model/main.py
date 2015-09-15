@@ -52,13 +52,16 @@ class GAUDInspectModelOut(QStandardItemModel):
         only need to load them with PyYaml.
         """
         with open(self.path) as f:
-            self.gaudidata = yaml.load(f)
+            self._data = yaml.load(f)
 
-        self.setColumnCount(len(self.gaudidata['GAUDI.objectives']) + 1)
-        self.setHorizontalHeaderLabels(
-            ['Individual'] + self.gaudidata['GAUDI.objectives'])
+        self.genes = []
+        self.objectives = self._data['GAUDI.objectives']
+        self.results = self._data['GAUDI.results']
+
+        self.setColumnCount(len(self.objectives) + 1)
+        self.setHorizontalHeaderLabels(['Individual'] + self.objectives)
         row = 0
-        for ind, val in self.gaudidata['GAUDI.results'].items():
+        for ind, val in self.results.items():
             col = 0
             self.insertRow(row)
             self.setItem(row, col, QStandardItem(ind))

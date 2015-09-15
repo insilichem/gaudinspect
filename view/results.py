@@ -42,7 +42,7 @@ class GAUDInspectViewResultsFilter(QtGui.QGroupBox):
 
     def __init__(self, title=None):
         super(GAUDInspectViewResultsFilter, self).__init__(title)
-        self.filters = set()
+        self.filters = []
         self.initUI()
 
     def initUI(self):
@@ -65,23 +65,23 @@ class GAUDInspectViewResultsFilter(QtGui.QGroupBox):
         w.setContentsMargins(0, 0, 0, 0)
         bar = QtGui.QHBoxLayout(w)
         bar.setContentsMargins(0, 0, 0, 0)
-        bar.type = QtGui.QComboBox()
-        bar.type.addItems(['--Choose--', 'Gene', 'Objective'])
-        bar.key = QtGui.QComboBox()
-        bar.key.addItems(['--Select--', 'A', 'B', 'C'])
-        bar.operator = QtGui.QComboBox()
-        bar.operator.addItems(['>', '<', '>=', '<=', '='])
-        bar.value = QtGui.QLineEdit()
-        bar.btn = QtGui.QPushButton('-')
-        bar.btn.setFixedWidth(20)
-        bar.btn.clicked.connect(lambda: self.del_filter_bar(w))
-        [bar.addWidget(x) for x in (bar.type, bar.key,
-                                    bar.operator, bar.value, bar.btn)]
+        w.type = QtGui.QComboBox()
+        w.type.addItems(['Genes', 'Objectives'])
+        w.key = QtGui.QComboBox()
+        w.key.setSizeAdjustPolicy(QtGui.QComboBox.AdjustToContents)
+        w.operator = QtGui.QComboBox()
+        w.operator.addItems(['>', '>=', '<', '<=', '==', '!=', 'contains'])
+        w.value = bar.value = QtGui.QLineEdit()
+        w.btn = QtGui.QPushButton('-')
+        w.btn.setFixedWidth(20)
+        w.btn.clicked.connect(lambda: self.del_filter_bar(w))
+        [bar.addWidget(x) for x in (w.type, w.key,
+                                    w.operator, w.value, w.btn)]
         return w
 
     def add_filter_bar(self):
         f = self.filter_bar()
-        self.filters.add(f)
+        self.filters.append(f)
         self.layout.addWidget(f)
 
     def del_filter_bar(self, f):
@@ -93,4 +93,4 @@ class GAUDInspectViewResultsFilter(QtGui.QGroupBox):
         for f in self.filters:
             self.layout.removeWidget(f)
             f.close()
-        self.filters.clear()
+        del self.filters[:]
