@@ -10,8 +10,9 @@ class GAUDInspectView(QtGui.QMainWindow):
 
     fileDropped = Signal(str)
 
-    def __init__(self):
+    def __init__(self, app=None):
         super(GAUDInspectView, self).__init__()
+        self.app = app
         self.setWindowIcon(QtGui.QIcon('icon.png'))
         self.glcontext = QtOpenGL.QGLContext(QtOpenGL.QGLFormat())
         self.setAcceptDrops(True)

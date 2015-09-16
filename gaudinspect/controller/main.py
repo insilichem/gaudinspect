@@ -12,7 +12,8 @@ class GAUDInspectController(object):
     Document this!
     """
 
-    def __init__(self, model, view):
+    def __init__(self, model, view, app=None):
+        self.app = None
         self.model = model
         self.view = view
 

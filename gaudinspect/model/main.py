@@ -17,7 +17,8 @@ class GAUDInspectModel(object):
     Wrapper function to choose correct model based on input file
     """
 
-    def __init__(self):
+    def __init__(self, app=None):
+        self.app = app
         self.input = None
         self.progress = None
         self.details = None

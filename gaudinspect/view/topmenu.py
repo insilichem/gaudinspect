@@ -27,7 +27,7 @@ class GAUDInspectViewTopMenu(object):
         self.parent.menu_file.addAction('Import state')
         self.parent.menu_file.addAction('Export state')
         self.parent.menu_file.addSeparator()
-        self.parent.menu_file.addAction('Exit')
+        self.parent.menu_file.addAction('Exit', self.parent.app.exit)
 
         # Top menu - Edit
         self.parent.menu_edit = self.parent.menuBar().addMenu("&Edit")

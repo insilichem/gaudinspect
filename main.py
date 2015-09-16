@@ -14,8 +14,8 @@ def main():
     except RuntimeError:
         app = QtGui.QApplication.instance()
 
-    model, view = GAUDInspectModel(), GAUDInspectView()
-    controller = GAUDInspectController(model, view)
+    model, view = GAUDInspectModel(app=app), GAUDInspectView(app=app)
+    controller = GAUDInspectController(model, view, app=app)
     sys.exit(app.exec_())
 
 if __name__ == '__main__':
