@@ -36,7 +36,7 @@ class GAUDInspectViewViewer(QChemlabWidget):
         self.initUI()
 
     def initUI(self):
-        self.setMinimumWidth(400)
+        self.setMinimumWidth(500)
         self.setSizePolicy(QtGui.QSizePolicy.Expanding,
                            QtGui.QSizePolicy.Preferred)
         self.background_color = (0, 0, 0, 0)
@@ -123,12 +123,14 @@ class GAUDInspectViewViewer(QChemlabWidget):
 
     def enable_effects(self):
         # better illumination
-        self.add_post_processing(
-            SSAOEffect, kernel_size=128, kernel_radius=1.0)
-        self.add_post_processing(OutlineEffect)  # black outlines
-        self.add_post_processing(FXAAEffect)  # fast antialiasing
-        self.update()
+        if self.renderers:
+            self.add_post_processing(
+                SSAOEffect, kernel_size=128, kernel_radius=1.0)
+            self.add_post_processing(OutlineEffect)  # black outlines
+            self.add_post_processing(FXAAEffect)  # fast antialiasing
+            self.update()
 
     def disable_effects(self):
-        del self.post_processing[:]
-        self.update()
+        if self.renderers:
+            del self.post_processing[:]
+            self.update()

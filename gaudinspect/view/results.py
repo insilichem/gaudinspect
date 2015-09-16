@@ -43,6 +43,7 @@ class GAUDInspectViewResultsFilter(QtGui.QGroupBox):
     def __init__(self, title=None):
         super(GAUDInspectViewResultsFilter, self).__init__(title)
         self.filters = []
+        self.hide()
         self.initUI()
 
     def initUI(self):

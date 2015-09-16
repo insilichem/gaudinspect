@@ -5,34 +5,80 @@ from PySide.QtCore import Qt
 from PySide import QtGui
 from itertools import cycle
 import operator
+from ..model.main import GAUDInspectModel
 
 
 class GAUDInspectResultsController(object):
 
-    def __init__(self, model, view, renderer='ballandstick', color='default'):
-        # Models
+    def __init__(self, view, model=None, renderer='ballandstick', color='default'):
         self.model = model
-        self.proxy = CustomSortFilterProxyModel(self.model)
-        self.proxy.setSourceModel(self.model)
-        # Tie them up
         self.view = view
         self.tableview = self.view.tabber.tabs[3].table
-        self.tableview.setModel(self.proxy)
-        self.tableview.sortByColumn(0, Qt.AscendingOrder)
         self.filters = self.view.tabber.tabs[3].filter_group
         # Some parameters
         self.renderer = renderer
         self.colors = sorted(self.view.viewer.COLORS.keys())
 
-        self.connect_signals()
+        if model:
+            self.set_model(model)
+        self.connect_view_signals()
 
-    def connect_signals(self):
+    def set_model(self, model):
+        # Models
+        self.model = model
+        self.proxy = CustomSortFilterProxyModel(self.model)
+        self.proxy.setSourceModel(self.model)
+        self.tableview.setModel(self.proxy)
+        self.tableview.sortByColumn(0, Qt.AscendingOrder)
+        self.connect_model_signals()
+        self.filters.show()
+
+    def connect_model_signals(self):
+        if not self.model:
+            return
         selectionModel = self.tableview.selectionModel()
         selectionModel.selectionChanged.connect(self.selection_changed)
 
         self.filters.filter_add.clicked.connect(self.fill_filters)
         self.filters.filter_btn.clicked.connect(self.apply_filters)
         self.filters.filter_clear.clicked.connect(self.proxy.clear_filters)
+
+    def connect_view_signals(self):
+        self.view.menu.open_file_dialog.fileSelected.connect(self.open_file)
+        self.view.menu.action_close_results.triggered.connect(self.clear)
+
+    # Slots
+    def clear(self):
+        if not self.model:
+            return
+        # Remove the model and filters
+        self.model.clear()
+        self.model = None
+        self.proxy.invalidate()
+        self.filters.filter_clear.click()
+        self.filters.hide()
+
+        # Disconnect signals
+        selectionModel = self.tableview.selectionModel()
+        selectionModel.selectionChanged.disconnect(self.selection_changed)
+        self.filters.filter_add.clicked.disconnect(self.fill_filters)
+        self.filters.filter_btn.clicked.disconnect(self.apply_filters)
+        self.filters.filter_clear.clicked.disconnect(
+            self.proxy.clear_filters)
+
+        # Clear the viewer
+        self.view.viewer.clear()
+        self.view.viewer.update()
+
+        # Reenable all tabs
+        for i in range(4):
+            self.view.tabber.setTabEnabled(i, True)
+
+    def open_file(self, f):
+        self.set_model(GAUDInspectModel.get(f))
+        self.view.tabber.setCurrentIndex(3)
+        for i in range(3):
+            self.view.tabber.setTabEnabled(i, False)
 
     def selection_changed(self, selected, deselected):
         self.view.viewer.clear()
@@ -107,7 +153,7 @@ class CustomSortFilterProxyModel(QtGui.QSortFilterProxyModel):
         return not False in tests
 
     def setFilterFixedString(self, criteria):
-        self.criteria = criteria
+        self.criteria[:] = criteria
         self.invalidateFilter()
 
     def clear_filters(self):

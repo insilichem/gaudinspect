@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PySide import QtGui, QtCore, QtOpenGL
-from . import viewer, topmenu, tabber
+from . import viewer, topmenu, tabber, stats
 
 
 class GAUDInspectView(QtGui.QMainWindow):
@@ -26,16 +26,23 @@ class GAUDInspectView(QtGui.QMainWindow):
         self.center()
 
         # Main layout
-        self.menu = topmenu.get(self)
+        self.left = QtGui.QWidget()
         self.viewer = viewer.get(self.glcontext, self)
+        self.stats = stats.get(self)
         self.tabber = tabber.get(self)
         self.statusbar = self.statusBar()
         self.splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
+        self.menu = topmenu.get(self)
 
         # Organize widgets
         self.layout.addWidget(self.splitter, 0, 0)
-        self.splitter.addWidget(self.viewer)
+        self.left_layout = QtGui.QGridLayout(self.left)
+        self.left_layout.addWidget(self.viewer, 0, 0)
+        self.left_layout.addWidget(self.stats, 0, 0)
+
+        self.splitter.addWidget(self.left)
         self.splitter.addWidget(self.tabber)
+        self.left_layout.setContentsMargins(0, 0, 0, 0)
 
     def center(self):
         # get geometry of this frame (a rectangle)

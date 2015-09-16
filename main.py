@@ -3,9 +3,9 @@
 
 import sys
 from PySide import QtGui
-from controller.main import GAUDInspectController
-from model.main import GAUDInspectModel
-from view.main import GAUDInspectView
+from gaudinspect.controller.main import GAUDInspectController
+from gaudinspect.model.main import GAUDInspectModel
+from gaudinspect.view.main import GAUDInspectView
 
 
 def main():
@@ -14,7 +14,7 @@ def main():
     except RuntimeError:
         app = QtGui.QApplication.instance()
 
-    model, view = GAUDInspectModel(sys.argv[1]), GAUDInspectView()
+    model, view = GAUDInspectModel(), GAUDInspectView()
     controller = GAUDInspectController(model, view)
     sys.exit(app.exec_())
 

@@ -11,19 +11,29 @@ from PySide.QtGui import QStandardItemModel, QStandardItem
 from PySide import QtCore
 
 
-def GAUDInspectModel(path):
+class GAUDInspectModel(object):
+
     """
     Wrapper function to choose correct model based on input file
     """
-    if path.endswith('.out.gaudi'):
-        model = GAUDInspectModelOut(path)
-    elif path.endswith('.in.gaudi'):
-        model = GAUDInspectModelIn(path)
-    else:
-        print('ERROR! Format unknown.')
-        return
 
-    return model
+    def __init__(self):
+        self.input = None
+        self.progress = None
+        self.details = None
+        self.results = None
+
+    @classmethod
+    def get(self, data):
+        if data.endswith('.out.gaudi'):
+            self.results = model = GAUDInspectModelOut(data)
+        elif data.endswith('.in.gaudi'):
+            self.input = model = GAUDInspectModelIn(data)
+        else:
+            print('ERROR! Format unknown.')
+            return
+
+        return model
 
 
 class GAUDInspectModelOut(QStandardItemModel):
@@ -54,7 +64,7 @@ class GAUDInspectModelOut(QStandardItemModel):
         with open(self.path) as f:
             self._data = yaml.load(f)
 
-        self.genes = []
+        self.genes = {}
         self.objectives = self._data['GAUDI.objectives']
         self.results = self._data['GAUDI.results']
 
@@ -100,3 +110,19 @@ class GAUDInspectModelOut(QStandardItemModel):
             return mol2, meta
         finally:
             z.close()
+
+    def clear(self):
+        super(GAUDInspectModelOut, self).clear()
+        self._data.clear()
+        self.objectives.clear()
+        self.genes.clear()
+        self.results.clear()
+
+
+class GAUDInspectModelIn(QStandardItemModel):
+
+    """
+    Parses GAUDI input files
+
+    """
+    pass
