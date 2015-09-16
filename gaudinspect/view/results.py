@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PySide import QtGui
-from PySide.QtCore import Qt
+from PySide.QtCore import Qt, Signal
 
 
 def get(parent=None):

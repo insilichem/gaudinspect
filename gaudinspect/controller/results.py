@@ -13,15 +13,15 @@ class GAUDInspectResultsController(object):
     def __init__(self, view, model=None, renderer='ballandstick', color='default'):
         self.model = model
         self.view = view
-        self.tableview = self.view.tabber.tabs[3].table
-        self.filters = self.view.tabber.tabs[3].filter_group
+        self.tab = self.view.tabber.tabs[3]
+        self.tableview = self.tab.table
+        self.filters = self.tab.filter_group
         # Some parameters
         self.renderer = renderer
         self.colors = sorted(self.view.viewer.COLORS.keys())
 
         if model:
             self.set_model(model)
-        self.connect_view_signals()
 
     def set_model(self, model):
         # Models
@@ -32,6 +32,9 @@ class GAUDInspectResultsController(object):
         self.tableview.sortByColumn(0, Qt.AscendingOrder)
         self.connect_model_signals()
         self.filters.show()
+        self.view.tabber.setCurrentIndex(3)
+        for i in range(3):
+            self.view.tabber.setTabEnabled(i, False)
 
     def connect_model_signals(self):
         if not self.model:
@@ -42,10 +45,6 @@ class GAUDInspectResultsController(object):
         self.filters.filter_add.clicked.connect(self.fill_filters)
         self.filters.filter_btn.clicked.connect(self.apply_filters)
         self.filters.filter_clear.clicked.connect(self.proxy.clear_filters)
-
-    def connect_view_signals(self):
-        self.view.menu.open_file_dialog.fileSelected.connect(self.open_file)
-        self.view.menu.action_close_results.triggered.connect(self.clear)
 
     # Slots
     def clear(self):
@@ -71,14 +70,8 @@ class GAUDInspectResultsController(object):
         self.view.viewer.update()
 
         # Reenable all tabs
-        for i in range(4):
+        for i in range(self.view.tabber.count()):
             self.view.tabber.setTabEnabled(i, True)
-
-    def open_file(self, f):
-        self.set_model(GAUDInspectModel.get(f))
-        self.view.tabber.setCurrentIndex(3)
-        for i in range(3):
-            self.view.tabber.setTabEnabled(i, False)
 
     def selection_changed(self, selected, deselected):
         self.view.viewer.clear()

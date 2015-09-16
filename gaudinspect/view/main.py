@@ -2,15 +2,19 @@
 # -*- coding: utf-8 -*-
 
 from PySide import QtGui, QtCore, QtOpenGL
+from PySide.QtCore import Signal
 from . import viewer, topmenu, tabber, stats
 
 
 class GAUDInspectView(QtGui.QMainWindow):
 
+    fileDropped = Signal(str)
+
     def __init__(self):
         super(GAUDInspectView, self).__init__()
         self.setWindowIcon(QtGui.QIcon('icon.png'))
         self.glcontext = QtOpenGL.QGLContext(QtOpenGL.QGLFormat())
+        self.setAcceptDrops(True)
 
         self.initUI()
         self.show()
@@ -18,6 +22,7 @@ class GAUDInspectView(QtGui.QMainWindow):
     def initUI(self):
         # Set up main window
         self.canvas = QtGui.QWidget(self)
+        self.canvas.setObjectName("MainCanvas")
         self.setCentralWidget(self.canvas)
         self.layout = QtGui.QGridLayout(self.canvas)
 
@@ -53,3 +58,17 @@ class GAUDInspectView(QtGui.QMainWindow):
         current_geometry.moveCenter(desktop_center)
         # move widget to the guessed top left corner
         self.move(current_geometry.topLeft())
+
+    def dragEnterEvent(self, e):
+        if e.mimeData().hasUrls():
+            e.accept()
+        else:
+            e.ignore()
+
+    def dropEvent(self, e):
+        if e.mimeData().hasUrls():
+            e.accept()
+            p = next(str(url.toLocalFile()) for url in e.mimeData().urls())
+            self.fileDropped.emit(p)
+        else:
+            e.ignore()
