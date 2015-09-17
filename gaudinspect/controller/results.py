@@ -19,6 +19,8 @@ class GAUDInspectResultsController(object):
         # Some parameters
         self.renderer = renderer
         self.colors = sorted(self.view.viewer.COLORS.keys())
+        self.selected = []
+        self.unzipped = {}
 
         if model:
             self.set_model(model)
@@ -77,20 +79,37 @@ class GAUDInspectResultsController(object):
         self.view.viewer.clear()
         renderer = self.renderer
         mols = []
-        # selection changed returns a list of selection ranges
-        for s in selected:
+        # First, remove unselected items in this action
+        to_deselect = []
+        for d in deselected:
             # each range has several items (cells)
-            for i in s.indexes():
+            for i in d.indexes():
                 # we only want cells in first column: the zip filename
                 if i.column() == 0:
                     # Get item from original model, not proxy!
                     # Just use mapToSource instead of itemFromIndex
-                    item = self.proxy.mapToSource(i)
-                    mol2, meta = self.model.parse_zip(item.data())
-                    for m, color in zip(mol2, cycle(self.colors)):
-                        mols.append(m)
-                        self.view.viewer.add_molecule(
-                            m, renderer=renderer, color=color)
+                    item = self.proxy.mapToSource(i).data()
+                    to_deselect.append(item)
+
+        self.selected = [s for s in self.selected if s not in to_deselect]
+        # Second, add new ones
+        for s in selected:
+            for i in s.indexes():
+                if i.column() == 0:
+                    item = self.proxy.mapToSource(i).data()
+                    if item not in self.selected:
+                        self.selected.append(item)
+
+        # Now we have the full selection, add it to viewer
+        for item in self.selected:
+            try:
+                mol2, meta = self.unzipped[item]
+            except KeyError:
+                mol2, meta = self.unzipped[item] = self.model.parse_zip(item)
+            for m, color in zip(mol2, cycle(self.colors)):
+                mols.append(m)
+                self.view.viewer.add_molecule(
+                    m, renderer=renderer, color=color)
         if mols:
             self.view.viewer.focus(molecules=mols)
 
@@ -115,6 +134,9 @@ class GAUDInspectResultsController(object):
                                    f.type.currentText().lower()))
         except AttributeError:
             pass
+
+    def _clear_cache(self):
+        self.unzipped.clear()
 
 
 class CustomSortFilterProxyModel(QtGui.QSortFilterProxyModel):
