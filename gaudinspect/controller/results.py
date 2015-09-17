@@ -5,7 +5,6 @@ from PySide.QtCore import Qt
 from PySide import QtGui
 from itertools import cycle
 import operator
-from ..model.main import GAUDInspectModel
 
 
 class GAUDInspectResultsController(object):

@@ -1,8 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import abc
 from .results import GAUDInspectResultsController
+from .newjob import GAUDInspectNewJobController
 from ..model.main import GAUDInspectModel
 
 
@@ -18,10 +18,10 @@ class GAUDInspectController(object):
         self.view = view
 
         # Child controllers
-        self.input = None
+        self.newjob = GAUDInspectNewJobController(view)
         self.progress = None
         self.details = None
-        self.results = GAUDInspectResultsController(view=view)
+        self.results = GAUDInspectResultsController(view)
 
         self.signals()
 
@@ -48,6 +48,5 @@ class GAUDInspectController(object):
         model = GAUDInspectModel.get(f)
         if f.endswith('.out.gaudi'):
             self.results.set_model(model)
-        # elif f.endswith('.in.gaudi'):
-        #     pass
-        # self.input.load_model(model)
+        elif f.endswith('.in.gaudi'):
+            self.newjob.set_model(model)
