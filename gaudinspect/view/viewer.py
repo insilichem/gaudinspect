@@ -129,7 +129,8 @@ class GAUDInspectViewViewer(QChemlabWidget):
         if self.renderers:
             self.add_post_processing(
                 SSAOEffect, kernel_size=128, kernel_radius=1.0)
-            self.add_post_processing(OutlineEffect)  # black outlines
+            self.add_post_processing(
+                OutlineEffect, color=(0, 0, 0))  # black outlines
             self.add_post_processing(FXAAEffect)  # fast antialiasing
             self.update()
 
