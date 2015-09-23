@@ -43,13 +43,14 @@ class GAUDInspectViewViewer(QChemlabWidget):
 
     # Controller methods
     def add_molecule(self, path, renderer='ballandstick',
-                     color='default'):
-        mol = datafile(path).read('molecule')
-        self.molecules[path] = mol
-        r = self.RENDERERS[renderer](self, mol.r_array, mol.type_array,
-                                     mol.bonds, color_scheme=self.COLORS[color])
-        mol.renderer = r
-        self.renderers.append(r)
+                     color='default', cache=True):
+        try:
+            mol = self.molecules[path]
+        except KeyError:
+            mol = self.molecules[path] = datafile(path).read('molecule')
+            mol.renderer = self.RENDERERS[renderer](self, mol.r_array, mol.type_array,
+                                                    mol.bonds, color_scheme=self.COLORS[color])
+        self.renderers.append(mol.renderer)
         self.update()
 
     def focus(self, molecules=None):
@@ -62,6 +63,8 @@ class GAUDInspectViewViewer(QChemlabWidget):
 
     def clear(self):
         del self.renderers[:]
+
+    def _clear_cache(self):
         self.molecules.clear()
 
     # ####
@@ -126,7 +129,8 @@ class GAUDInspectViewViewer(QChemlabWidget):
         if self.renderers:
             self.add_post_processing(
                 SSAOEffect, kernel_size=128, kernel_radius=1.0)
-            self.add_post_processing(OutlineEffect)  # black outlines
+            self.add_post_processing(
+                OutlineEffect, color=(0, 0, 0))  # black outlines
             self.add_post_processing(FXAAEffect)  # fast antialiasing
             self.update()
             self.parent.status('Enabled effects')

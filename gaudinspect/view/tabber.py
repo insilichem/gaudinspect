@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PySide import QtGui
-from . import newjob, progress, details, results
+from .tabs import newjob, progress, details, results
 
 
 def get(parent=None):

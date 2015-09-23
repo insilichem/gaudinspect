@@ -5,10 +5,10 @@
 import zipfile
 import tempfile
 import os
+from copy import deepcopy
 # External dependencies
 import yaml
 from PySide.QtGui import QStandardItemModel, QStandardItem
-from PySide import QtCore
 
 
 class GAUDInspectModel(object):
@@ -19,7 +19,7 @@ class GAUDInspectModel(object):
 
     def __init__(self, app=None):
         self.app = app
-        self.input = None
+        self.newjob = None
         self.progress = None
         self.details = None
         self.results = None
@@ -29,7 +29,7 @@ class GAUDInspectModel(object):
         if data.endswith('.out.gaudi'):
             self.results = model = GAUDInspectModelOut(data)
         elif data.endswith('.in.gaudi'):
-            self.input = model = GAUDInspectModelIn(data)
+            self.newjob = model = GAUDInspectModelIn(data)
         else:
             print('ERROR! Format unknown.')
             return
@@ -126,4 +126,16 @@ class GAUDInspectModelIn(QStandardItemModel):
     Parses GAUDI input files
 
     """
-    pass
+
+    def __init__(self, path, *args, **kwargs):
+        super(GAUDInspectModelIn, self).__init__()
+        self.path = path
+        with open(path) as f:
+            self._gaudidata = yaml.load(f)
+            self.gaudidata = deepcopy(self._gaudidata)
+
+    def export(self, path):
+        if not path.endswith('.in.gaudi'):
+            path = path + '.in.gaudi'
+        with open(path, 'w') as f:
+            yaml.dump(self.gaudidata, f, default_flow_style=False)
