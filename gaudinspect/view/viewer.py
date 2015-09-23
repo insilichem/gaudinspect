@@ -129,8 +129,10 @@ class GAUDInspectViewViewer(QChemlabWidget):
             self.add_post_processing(OutlineEffect)  # black outlines
             self.add_post_processing(FXAAEffect)  # fast antialiasing
             self.update()
+            self.parent.status('Enabled effects')
 
     def disable_effects(self):
         if self.renderers:
             del self.post_processing[:]
             self.update()
+            self.parent.status('Disabled effects')

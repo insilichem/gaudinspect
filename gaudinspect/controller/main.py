@@ -46,8 +46,10 @@ class GAUDInspectController(object):
 
     def _open_file(self, f):
         model = GAUDInspectModel.get(f)
-        if f.endswith('.out.gaudi'):
-            self.results.set_model(model)
-        # elif f.endswith('.in.gaudi'):
-        #     pass
-        # self.input.load_model(model)
+        if model:
+            self.view.status('Loaded file {}'.format(f))
+            if f.endswith('.out.gaudi'):
+                self.results.set_model(model)
+            # elif f.endswith('.in.gaudi'):
+            #     pass
+            # self.input.load_model(model)

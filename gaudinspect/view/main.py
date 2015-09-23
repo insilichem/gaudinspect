@@ -29,7 +29,7 @@ class GAUDInspectView(QtGui.QMainWindow):
 
         self.setWindowTitle('GAUDInspect')
         self.setGeometry(0, 0, 900, 600)
-        self.center()
+        self._center()
 
         # Main layout
         self.left = QtGui.QWidget()
@@ -50,7 +50,7 @@ class GAUDInspectView(QtGui.QMainWindow):
         self.splitter.addWidget(self.tabber)
         self.left_layout.setContentsMargins(0, 0, 0, 0)
 
-    def center(self):
+    def _center(self):
         # get geometry of this frame (a rectangle)
         current_geometry = self.frameGeometry()
         # get center of screen
@@ -60,16 +60,27 @@ class GAUDInspectView(QtGui.QMainWindow):
         # move widget to the guessed top left corner
         self.move(current_geometry.topLeft())
 
+    # Implement drag&drop
     def dragEnterEvent(self, e):
-        if e.mimeData().hasUrls():
+        if e.mimeData().hasUrls() and \
+                next(str(url.toLocalFile()) for url in e.mimeData().urls()).endswith('.gaudi'):
             e.accept()
+            self.setWindowOpacity(0.8)
         else:
             e.ignore()
+
+    def dragLeaveEvent(self, e):
+        self.setWindowOpacity(1.0)
 
     def dropEvent(self, e):
         if e.mimeData().hasUrls():
             e.accept()
             p = next(str(url.toLocalFile()) for url in e.mimeData().urls())
             self.fileDropped.emit(p)
+            self.setWindowOpacity(1.0)
         else:
             e.ignore()
+
+    # Status bar handler
+    def status(self, txt):
+        self.statusbar.showMessage(txt, 3000)
