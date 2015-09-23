@@ -3,7 +3,7 @@
 
 from PySide import QtGui, QtCore, QtOpenGL
 from PySide.QtCore import Signal
-from . import viewer, topmenu, tabber, stats
+from . import viewer, menu, tabber, stats
 
 
 class GAUDInspectView(QtGui.QMainWindow):
@@ -38,7 +38,7 @@ class GAUDInspectView(QtGui.QMainWindow):
         self.tabber = tabber.get(self)
         self.statusbar = self.statusBar()
         self.splitter = QtGui.QSplitter(QtCore.Qt.Horizontal)
-        self.menu = topmenu.get(self)
+        self.menu = menu.get(self)
 
         # Organize widgets
         self.layout.addWidget(self.splitter, 0, 0)

@@ -9,7 +9,9 @@ import operator
 
 class GAUDInspectResultsController(object):
 
-    def __init__(self, view, model=None, renderer='ballandstick', color='default'):
+    def __init__(self, parent, view, model=None,
+                 renderer='ballandstick', color='default'):
+        self.parent = parent
         self.model = model
         self.view = view
         self.tab = self.view.tabber.tabs[3]

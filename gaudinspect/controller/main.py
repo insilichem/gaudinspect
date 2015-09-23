@@ -3,6 +3,7 @@
 
 from .results import GAUDInspectResultsController
 from .newjob import GAUDInspectNewJobController
+from .menu import GAUDInspectMenuController
 from ..model.main import GAUDInspectModel
 
 
@@ -13,27 +14,32 @@ class GAUDInspectController(object):
     """
 
     def __init__(self, model, view, app=None):
-        self.app = None
+        self.app = app
         self.model = model
         self.view = view
 
         # Child controllers
-        self.newjob = GAUDInspectNewJobController(view)
+        self.menu = GAUDInspectMenuController(self, view)
+        self.newjob = GAUDInspectNewJobController(self, view)
         self.progress = None
         self.details = None
-        self.results = GAUDInspectResultsController(view)
+        self.results = GAUDInspectResultsController(self, view)
 
         self.signals()
 
+    # Global signals and signals between controllers
     def signals(self):
+
         # Viewer visibility
         self.view.tabber.currentChanged.connect(self._viewer_visibility)
+
+        # Drag & Drop
         self.view.fileDropped.connect(self._open_file)
 
-        # Results signals
-        self.view.menu.open_file_dialog.fileSelected.connect(
+        # Menu actions
+        self.menu.open_file_dialog.fileSelected.connect(
             self._open_file)
-        self.view.menu.action_close_results.triggered.connect(
+        self.view.menu.results.close.triggered.connect(
             self.results.clear)
 
     def _viewer_visibility(self, i):
