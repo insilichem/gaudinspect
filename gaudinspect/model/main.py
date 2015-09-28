@@ -8,7 +8,7 @@ import os
 from copy import deepcopy
 # External dependencies
 import yaml
-from PySide.QtGui import QStandardItemModel, QStandardItem
+from PySide.QtGui import QStandardItemModel, QStandardItem, QListWidgetItem
 
 
 class GAUDInspectModel(object):

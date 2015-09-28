@@ -8,7 +8,9 @@ import yaml
 import importlib
 from collections import OrderedDict
 from copy import deepcopy
-from PySide import QtGui
+from PySide import QtGui, QtCore
+
+from ..view.dialogs.extension import GAUDInspectConfigureExtension
 
 
 class GAUDInspectNewJobController(object):
@@ -111,19 +113,13 @@ class GAUDInspectNewJobController(object):
                 getattr(self.form, k).setText(str(self.model.gaudidata[v][w]))
 
             for gene in self.model.gaudidata['genes']:
-                item = QtGui.QListWidgetItem(
-                    '{} ({})'.format(gene['name'], gene['type']))
-                item.name = gene.pop('name', '')
-                item.path = gene.pop('type', '')
-                item.params = gene
+                item = self._create_data_listitem(
+                    gene.pop('name', ''), gene.pop('module', ''), gene)
                 self.form.genes_list.addItem(item)
 
             for obj in self.model.gaudidata['objectives']:
-                item = QtGui.QListWidgetItem(
-                    '{} ({})'.format(obj['name'], obj['type']))
-                item.name = obj.pop('name', '')
-                item.path = obj.pop('type', '')
-                item.params = obj
+                item = self._create_data_listitem(
+                    obj.pop('name', ''), obj.pop('module', ''), obj)
                 self.form.objectives_list.addItem(item)
 
             # Replace default advanced settings
@@ -132,7 +128,7 @@ class GAUDInspectNewJobController(object):
             for k, v in self.model.gaudidata['ga'].items():
                 self.advanced_options.get(k, ['_'])[0] = v
             self.advanced_options['similarity'][0] = \
-                self.model.gaudidata['similarity']['type']
+                self.model.gaudidata['similarity']['module']
             self.advanced_options['similarity_args'][0] = \
                 self.model.gaudidata['similarity']['args']
             self.advanced_options['similarity_kwargs'][0] = \
@@ -140,7 +136,7 @@ class GAUDInspectNewJobController(object):
 
         self.form.advanced_dialog.fill_table(self.advanced_options)
 
-    def dump_data_to_model(self):
+    def dump(self):
         if self.model:
             for k, (v, w, t) in self.FIELDS.items():
                 self.model.gaudidata[v][w] = t(getattr(self.form, k).text())
@@ -160,24 +156,48 @@ class GAUDInspectNewJobController(object):
                 v = self.advanced_options.get(k, ['_'])[0]
             for k, v in self.model.gaudidata['ga'].items():
                 v = self.advanced_options.get(k, ['_'])[0]
-            self.model.gaudidata['similarity']['type'] = \
-                self.advanced_options['similarity'][0]
-            self.model.gaudidata['similarity']['args'] =  \
-                self.advanced_options['similarity_args'][0]
-            self.model.gaudidata['similarity']['kwargs'] = \
-                self.advanced_options['similarity_kwargs'][0]
+            self.model.gaudidata['similarity'][
+                'type'] = self.advanced_options['similarity'][0]
+            self.model.gaudidata['similarity'][
+                'args'] = self.advanced_options['similarity_args'][0]
+            self.model.gaudidata['similarity'][
+                'kwargs'] = self.advanced_options['similarity_kwargs'][0]
 
-    def _random_name(self):
-        s = ''.join(random.choice(string.ascii_uppercase + string.digits)
-                    for _ in range(8))
-        self.form.general_project_field.setText(s)
+    def _create_item(self, d=None, meta={}):
+        gaudipath = self.parent.app.settings.value("general/gaudipath")
+        if 'module' in meta:
+            print(meta)
+            gaudi, type_, module = meta.pop('module').split('.')
+            extension = os.path.join(
+                gaudipath, type_, module) + '.gaudi-extension'
 
-    def _choose_path(self):
-        path = QtGui.QFileDialog.getExistingDirectory(
-            self.form, 'Choose a directory', os.getcwd())
-        self.form.general_outputpath_field.setText(path)
+        elif d:
+            extension, f = QtGui.QFileDialog.getOpenFileName(self.view, 'Load GAUDI extension',
+                                                             os.path.join(
+                                                                 gaudipath, d),
+                                                             "GAUDI Extension (*.gaudi-extension);; All files (*.*)")
+        else:
+            print("Please provide type of extension or already populated dict")
+            return
+
+        with open(extension) as f:
+            definitions = yaml.load(f)
+
+        params, ok = GAUDInspectConfigureExtension.process(
+            self.view, definitions['args'], name=meta.pop('name', ''),
+            module=definitions['module'], values=meta)
+        if ok:
+            return self._create_data_listitem(
+                params.pop('name', ''), params.pop('module', ''), params)
+
+    def _update_item(self, item):
+        new = self._create_item(meta=item.data(QtCore.Qt.UserRole))
+        item.setText(new.text())
+        item.setData(new.data(QtCore.Qt.UserRole))
 
     # Actions
+    # Gene & Objective actions
+
     def _gene_add(self):
         item = self._create_item(d='genes')
         self.form.genes_list.addItem(item)
@@ -208,43 +228,24 @@ class GAUDInspectNewJobController(object):
         if item is not None:
             self._update_item(item)
 
-    def _create_item(self, d=None, meta={}):
-        gaudipath = self.parent.app.settings.value("general/gaudipath")
-        if 'type' in meta:
-            gaudi, type_, module = meta.pop('type').split('.')
-            extension = os.path.join(
-                gaudipath, type_, module) + '.gaudi-extension'
+    # General actions
+    def _random_name(self):
+        s = ''.join(random.choice(string.ascii_uppercase + string.digits)
+                    for _ in range(8))
+        self.form.general_project_field.setText(s)
 
-        elif d:
-            extension, f = QtGui.QFileDialog.getOpenFileName(self.view, 'Load GAUDI extension',
-                                                             os.path.join(
-                                                                 gaudipath, d),
-                                                             "GAUDI Extension (*.gaudi-extension);; All files (*.*)")
-        else:
-            print("Please provide type of extension or already populated dict")
-            return
+    def _choose_path(self):
+        path = QtGui.QFileDialog.getExistingDirectory(
+            self.form, 'Choose a directory', os.getcwd())
+        self.form.general_outputpath_field.setText(path)
 
-        with open(extension) as f:
-            definitions = yaml.load(f)
-
-        name, path = meta.pop('name', ''), definitions.pop('path', '')
-        params, ok = self.form.configure_dialog(
-            self.view, definitions['args'], name=name, path=path, values=meta)
-        if ok:
-            item = QtGui.QListWidgetItem(
-                "{} ({})".format(params['name'], params['path']))
-            item.name = params.pop('name', '')
-            item.path = params.pop('path', '')
-            item.params = params
-            return item
-
-    def _update_item(self, item):
-        meta = {'name': item.name, 'type': item.path}
-        meta.update(item.params)
-        print(meta)
-        new = self._create_item(meta=meta)
-
-        item.setText(new.text())
-        item.name = new.name
-        item.path = new.path
-        item.params = deepcopy(new.params)
+    # Helper
+    @staticmethod
+    def _create_data_listitem(name, module, params):
+        data = {'name': name,
+                'module': module,
+                'params': params}
+        item = QtGui.QListWidgetItem(
+            '{} ({})'.format(name, module))
+        item.setData(QtCore.Qt.UserRole, data)
+        return item
