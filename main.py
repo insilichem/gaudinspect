@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import os
 from PySide import QtGui, QtCore
 from gaudinspect.controller.main import GAUDInspectController
 from gaudinspect.model.main import GAUDInspectModel
@@ -16,8 +17,12 @@ def main():
         app = QtGui.QApplication.instance()
 
     app.settings = QtCore.QSettings("GAUDI", "GAUDInspect")
-    app.settings.setValue(
-        "general/gaudipath", "C:/Users/Jaime/dev/gaudi/gaudi")
+    if os.name == 'posix':
+        app.settings.setValue(
+            "general/gaudipath", "/home/jr/dev/gaudi/gaudi")
+    elif os.name == 'nt':
+        app.settings.setValue(
+            "general/gaudipath", "C:/Users/Jaime/dev/gaudi/gaudi")
     model, view = GAUDInspectModel(app=app), GAUDInspectView(app=app)
     controller = GAUDInspectController(model, view, app=app)
     sys.exit(app.exec_())

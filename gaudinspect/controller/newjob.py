@@ -113,13 +113,11 @@ class GAUDInspectNewJobController(object):
                 getattr(self.form, k).setText(str(self.model.gaudidata[v][w]))
 
             for gene in self.model.gaudidata['genes']:
-                item = self._create_data_listitem(
-                    gene.pop('name', ''), gene.pop('module', ''), gene)
+                item = self._create_data_listitem(gene)
                 self.form.genes_list.addItem(item)
 
             for obj in self.model.gaudidata['objectives']:
-                item = self._create_data_listitem(
-                    obj.pop('name', ''), obj.pop('module', ''), obj)
+                item = self._create_data_listitem(obj)
                 self.form.objectives_list.addItem(item)
 
             # Replace default advanced settings
@@ -165,17 +163,17 @@ class GAUDInspectNewJobController(object):
 
     def _create_item(self, d=None, meta={}):
         gaudipath = self.parent.app.settings.value("general/gaudipath")
+
         if 'module' in meta:
-            print(meta)
-            gaudi, type_, module = meta.pop('module').split('.')
+            gaudi, type_, module = meta['module'].split('.')
             extension = os.path.join(
                 gaudipath, type_, module) + '.gaudi-extension'
-
         elif d:
-            extension, f = QtGui.QFileDialog.getOpenFileName(self.view, 'Load GAUDI extension',
-                                                             os.path.join(
-                                                                 gaudipath, d),
-                                                             "GAUDI Extension (*.gaudi-extension);; All files (*.*)")
+            extension, f = QtGui.QFileDialog.getOpenFileName(
+                self.view, 'Load GAUDI extension', os.path.join(gaudipath, d),
+                "GAUDI Extension (*.gaudi-extension);; All files (*.*)")
+            if not extension:
+                return
         else:
             print("Please provide type of extension or already populated dict")
             return
@@ -184,20 +182,18 @@ class GAUDInspectNewJobController(object):
             definitions = yaml.load(f)
 
         params, ok = GAUDInspectConfigureExtension.process(
-            self.view, definitions['args'], name=meta.pop('name', ''),
-            module=definitions['module'], values=meta)
+            self.view, definitions, values=meta)
         if ok:
-            return self._create_data_listitem(
-                params.pop('name', ''), params.pop('module', ''), params)
+            return self._create_data_listitem(params)
 
     def _update_item(self, item):
         new = self._create_item(meta=item.data(QtCore.Qt.UserRole))
-        item.setText(new.text())
-        item.setData(new.data(QtCore.Qt.UserRole))
+        if new:
+            item.setText(new.text())
+            item.setData(QtCore.Qt.UserRole, new.data(QtCore.Qt.UserRole))
 
     # Actions
     # Gene & Objective actions
-
     def _gene_add(self):
         item = self._create_item(d='genes')
         self.form.genes_list.addItem(item)
@@ -215,7 +211,7 @@ class GAUDInspectNewJobController(object):
 
     def _objective_add(self):
         item = self._create_item(d='objectives')
-        self.form.genes_list.addItem(item)
+        self.form.objectives_list.addItem(item)
 
     def _objective_del(self):
         i = self.form.objectives_list.currentRow()
@@ -241,11 +237,8 @@ class GAUDInspectNewJobController(object):
 
     # Helper
     @staticmethod
-    def _create_data_listitem(name, module, params):
-        data = {'name': name,
-                'module': module,
-                'params': params}
+    def _create_data_listitem(params):
         item = QtGui.QListWidgetItem(
-            '{} ({})'.format(name, module))
-        item.setData(QtCore.Qt.UserRole, data)
+            '{} ({})'.format(params['name'], params['module']))
+        item.setData(QtCore.Qt.UserRole, params)
         return item

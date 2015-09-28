@@ -69,6 +69,8 @@ class GAUDInspectConfigureExtension(QtGui.QDialog):
 
         self.name_fld.setText(name)
         self.module_fld.setText(module)
+        params.pop('file', None)
+        params.pop('module', None)
         for i, (k, (type_, tooltip, default)) in enumerate(params.items()):
             self.table.insertRow(i)
             key = QtGui.QTableWidgetItem(str(k))
@@ -84,19 +86,26 @@ class GAUDInspectConfigureExtension(QtGui.QDialog):
         params = {}
         for i in range(self.table.rowCount()):
             k = self.table.item(i, 0)
-            params[k.text()] = k.type_, k.toolTip(), k.type_(
-                self.table.item(i, 1).text())
+            try:
+                params[k.text()] = k.type_(self.table.item(i, 1).text())
+            except ValueError:  # process lists
+                params[k.text()] = list(map(
+                    k.type_, self.table.item(i, 1).text().strip('[]').split(',')))
         params['name'] = self.name_fld.text()
         params['module'] = self.module_fld.text()
         return params
 
     @staticmethod
-    def process(parent, definitions, name=None, module=None, values=None):
+    def process(parent, definitions, values=None):
         if values:
+            name = values.pop('name', '')
+            module = values.pop('module', '')
             for k in values:
                 if k in definitions:
                     definitions[k][2] = values[k]
-                    print(k, definitions[k], values[k])
+        else:
+            name = ''
+            module = definitions.get('module', '')
         dialog = GAUDInspectConfigureExtension(parent=parent)
         dialog.load_data(name=name, module=module, params=definitions)
         result = dialog.exec_()
