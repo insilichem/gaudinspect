@@ -87,7 +87,7 @@ class GAUDInspectNewJobController(object):
         path, format = QtGui.QFileDialog.getSaveFileName(
             self.view, 'Save this GAUDI input', os.getcwd(), "GAUDI Input (*.in.gaudi)")
         if path:
-            self.dump_data_to_model()
+            self.dump()
             self.model.export(path)
 
     # Signals
@@ -142,12 +142,14 @@ class GAUDInspectNewJobController(object):
             del self.model.gaudidata['genes'][:]
             for i in range(self.form.genes_list.count()):
                 item = self.form.genes_list.item(i)
-                self.model.gaudidata['genes'].append(item.params)
+                self.model.gaudidata['genes'].append(
+                    item.data(QtCore.Qt.UserRole))
 
             del self.model.gaudidata['objectives'][:]
             for i in range(self.form.objectives_list.count()):
                 item = self.form.objectives_list.item(i)
-                self.model.gaudidata['objectives'].append(item.params)
+                self.model.gaudidata['objectives'].append(
+                    item.data(QtCore.Qt.UserRole))
 
             # Replace default advanced settings
             for k, v in self.model.gaudidata['general'].items():
