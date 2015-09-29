@@ -2,13 +2,12 @@
 # -*- coding: utf-8 -*-
 
 from PySide import QtGui, QtCore, QtOpenGL
-from PySide.QtCore import Signal
 from . import viewer, menu, tabber, stats
 
 
 class GAUDInspectView(QtGui.QMainWindow):
 
-    fileDropped = Signal(str)
+    fileDropped = QtCore.Signal(str)
 
     def __init__(self, app=None):
         super(GAUDInspectView, self).__init__()

@@ -4,6 +4,7 @@
 from .results import GAUDInspectResultsController
 from .newjob import GAUDInspectNewJobController
 from .menu import GAUDInspectMenuController
+from .progress import GAUDInspectProgressController
 from ..model.main import GAUDInspectModel
 
 
@@ -20,7 +21,7 @@ class GAUDInspectController(object):
         # Child controllers
         self.menu = GAUDInspectMenuController(self, view)
         self.newjob = GAUDInspectNewJobController(self, view)
-        self.progress = None
+        self.progress = GAUDInspectProgressController(self, view)
         self.details = None
         self.results = GAUDInspectResultsController(self, view)
 

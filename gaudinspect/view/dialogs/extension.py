@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PySide import QtGui, QtCore
+import yaml
 
 
 class GAUDInspectConfigureExtension(QtGui.QDialog):
@@ -56,7 +57,8 @@ class GAUDInspectConfigureExtension(QtGui.QDialog):
         super(GAUDInspectConfigureExtension, self).showEvent(event)
         w, h = self.table.size().toTuple()
         w2, h2 = self.general_group.size().toTuple()
-        self.resize(w2 + 20, h + h2 + 85)
+        w3, h3 = self.buttons.size().toTuple()
+        self.resize(w2 + 20, h + h2 + 100)
 
     # Controller
     def load_data(self, name=None, module=None, params=None):
@@ -86,11 +88,7 @@ class GAUDInspectConfigureExtension(QtGui.QDialog):
         params = {}
         for i in range(self.table.rowCount()):
             k = self.table.item(i, 0)
-            try:
-                params[k.text()] = k.type_(self.table.item(i, 1).text())
-            except ValueError:  # process lists
-                params[k.text()] = list(map(
-                    k.type_, self.table.item(i, 1).text().strip('[]').split(',')))
+            params[k.text()] = yaml.load(self.table.item(i, 1).text())
         params['name'] = self.name_fld.text()
         params['module'] = self.module_fld.text()
         return params

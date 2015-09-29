@@ -10,7 +10,6 @@ from gaudinspect.view.main import GAUDInspectView
 
 
 def main():
-    sys.path.append('C:/Users/Jaime/dev/gaudi')
     try:
         app = QtGui.QApplication(sys.argv)
     except RuntimeError:
@@ -18,11 +17,11 @@ def main():
 
     app.settings = QtCore.QSettings("GAUDI", "GAUDInspect")
     if os.name == 'posix':
-        app.settings.setValue(
-            "general/gaudipath", "/home/jr/dev/gaudi/gaudi")
+        app.settings.setValue("general/gaudipath", "/home/jr/dev/gaudi")
+        app.settings.setValue("general/chimera",
+                              "/home/jr/.local/UCSF-Chimera64-1.10.1/bin/chimera")
     elif os.name == 'nt':
-        app.settings.setValue(
-            "general/gaudipath", "C:/Users/Jaime/dev/gaudi/gaudi")
+        app.settings.setValue("general/gaudipath", "C:/Users/Jaime/dev/gaudi")
     model, view = GAUDInspectModel(app=app), GAUDInspectView(app=app)
     controller = GAUDInspectController(model, view, app=app)
     sys.exit(app.exec_())
