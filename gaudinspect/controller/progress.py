@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import yaml
 from PySide import QtCore, QtGui
 
 
@@ -20,6 +21,8 @@ class GAUDInspectProgressController(object):
         self.tab.input_btn.clicked.connect(self.open_file)
         self.tab.input_run.clicked.connect(self.run)
         self.process.readyReadStandardOutput.connect(self.report)
+        self.process.started.connect(self.process_started)
+        self.process.finished.connect(self.process_finished)
 
     def run(self, path=None):
         if path is None:
@@ -34,23 +37,6 @@ class GAUDInspectProgressController(object):
                 "{} {}".format(gaudi, path)]
 
         self.process.start(chimera, args)
-        # self.process.waitForStarted()
-
-        self.tab.textbox.clear()
-        self.view.tabber.setCurrentIndex(1)
-        self.parent.newjob.tab.bottom_run.setEnabled(False)
-        self.tab.input_run.setEnabled(False)
-        for i in [0, 2, 3]:
-            self.view.tabber.setTabEnabled(i, False)
-
-        self.view.status('Running new job')
-        self.tab.textbox.append('Running new job')
-
-        # self.process.waitForFinished()
-        # self.parent.newjob.tab.bottom_run.setEnabled(True)
-        # self.tab.input_run.setEnabled(True)
-        # for i in [0, 2, 3]:
-        #     self.view.tabber.setTabEnabled(i, True)
 
     def open_file(self):
         path, f = QtGui.QFileDialog.getOpenFileName(
@@ -64,7 +50,7 @@ class GAUDInspectProgressController(object):
         # Tabulated data
         self.add_row(*self.parse_output(line))
 
-    @staticmethod
+    @staticmethod  # The 'Model' in output parsing
     def parse_output(line):
         try:
             int(line.strip()[0])
@@ -79,9 +65,10 @@ class GAUDInspectProgressController(object):
                                     for x in (avg, min_, max_))))
             return gen, evals, objectives
 
+    # The 'Controller' of output parsing
     def add_row(self, gen, evals, objectives):
         if gen is not None:
-            self.tab.table.setColumnCount(2 + len(objectives))
+            self.tab.progressbar.setValue(gen)
             i = self.tab.table.rowCount()
             self.tab.table.insertRow(i)
             self.tab.table.setItem(i, 0, QtGui.QTableWidgetItem(str(gen)))
@@ -89,3 +76,38 @@ class GAUDInspectProgressController(object):
             for j, (a, m, M) in enumerate(objectives):
                 self.tab.table.setItem(
                     i, 2 + j, QtGui.QTableWidgetItem(str(a)))
+            QtCore.QTimer.singleShot(10, self.tab.table.scrollToBottom)
+
+    # Slots
+    def process_started(self):
+        # After GAUDI started
+        path = self.tab.input_fld.text()
+        with open(path) as f:
+            inputfile = yaml.load(f)
+        self.tab.progressbar.reset()
+        self.tab.progressbar.setMinimum(0)
+        self.tab.progressbar.setMaximum(inputfile['ga']['gens'])
+
+        self.tab.table.setColumnCount(2 + len(inputfile['objectives']))
+        headers = ['Generations', 'Evaluations'] + \
+            ["{}{}".format('+-'[obj['weight'] < 0], obj['name'])
+             for obj in inputfile['objectives']]
+        self.tab.table.setHorizontalHeaderLabels(headers)
+
+        self.tab.textbox.clear()
+        self.view.tabber.setCurrentIndex(1)
+        self.parent.newjob.tab.bottom_run.setEnabled(False)
+        self.tab.input_run.setEnabled(False)
+        for i in [0, 2, 3]:
+            self.view.tabber.setTabEnabled(i, False)
+
+        self.view.status('Running new job')
+        self.tab.textbox.append('Running new job')
+
+    def process_finished(self, exitCode, *args, **kwargs):
+        self.parent.newjob.tab.bottom_run.setEnabled(True)
+        self.tab.input_run.setEnabled(True)
+        for i in [0, 2, 3]:
+            self.view.tabber.setTabEnabled(i, True)
+        self.view.status('Job Finished!')
+        self.tab.textbox.append('Job Finished!')

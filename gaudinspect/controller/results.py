@@ -10,7 +10,7 @@ import operator
 class GAUDInspectResultsController(object):
 
     def __init__(self, parent, view, model=None,
-                 renderer='sphere', color='default'):
+                 renderer='ballandstick', color='default'):
         self.parent = parent
         self.model = model
         self.view = view

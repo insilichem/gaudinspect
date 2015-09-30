@@ -33,6 +33,7 @@ class GAUDInspectViewProgress(QtGui.QWidget):
 
         self.tabber = QtGui.QTabWidget()
         self.table = QtGui.QTableWidget()
+        self.table.verticalHeader().setVisible(False)
         self.grid.addWidget(self.table, 1, 0)
 
         self.textbox = QtGui.QTextEdit(self)
@@ -51,5 +52,4 @@ class GAUDInspectViewProgress(QtGui.QWidget):
         self.btn_layout.addStretch(1)
 
         self.progressbar = QtGui.QProgressBar()
-        self.progressbar.setValue(40)
         self.grid.addWidget(self.progressbar, 3, 0)
