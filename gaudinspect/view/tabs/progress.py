@@ -58,5 +58,7 @@ class GAUDInspectViewProgress(QtGui.QWidget):
         self.btn_layout.addStretch(1)
 
         self.progressbar = QtGui.QProgressBar()
+        self.progressbar.setMinimum(0)
+        self.progressbar.setValue(0)
         self.progressbar.hide()
         self.grid.addWidget(self.progressbar, 3, 0)

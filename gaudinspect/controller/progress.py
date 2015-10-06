@@ -89,7 +89,6 @@ class GAUDInspectProgressController(object):
             inputfile = yaml.load(f)
         self.tab.progressbar.reset()
         self.tab.progressbar.show()
-        self.tab.progressbar.setMinimum(0)
         self.tab.progressbar.setMaximum(inputfile['ga']['gens'])
 
         self.tab.table.clear()
