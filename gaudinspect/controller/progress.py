@@ -14,6 +14,7 @@ class GAUDInspectProgressController(object):
         self.view = view
         self.tab = self.view.tabber.tabs[1]
         self.process = QtCore.QProcess(self.view)
+        self.history = []
         self.signals()
 
     def signals(self):
@@ -68,6 +69,7 @@ class GAUDInspectProgressController(object):
     # The 'Controller' of output parsing
     def add_row(self, gen, evals, objectives):
         if gen is not None:
+            self.history.append((evals, objectives))
             self.tab.progressbar.setValue(gen)
             i = self.tab.table.rowCount()
             self.tab.table.insertRow(i)
@@ -76,6 +78,7 @@ class GAUDInspectProgressController(object):
             for j, (a, m, M) in enumerate(objectives):
                 self.tab.table.setItem(
                     i, 2 + j, QtGui.QTableWidgetItem(str(a)))
+            self.view.stats.chart.plot(objectives, evals, gen)
             QtCore.QTimer.singleShot(10, self.tab.table.scrollToBottom)
 
     # Slots
@@ -85,9 +88,13 @@ class GAUDInspectProgressController(object):
         with open(path) as f:
             inputfile = yaml.load(f)
         self.tab.progressbar.reset()
+        self.tab.progressbar.show()
         self.tab.progressbar.setMinimum(0)
         self.tab.progressbar.setMaximum(inputfile['ga']['gens'])
 
+        self.tab.table.clear()
+        self.tab.table.setRowCount(0)
+        self.tab.table.setColumnCount(0)
         self.tab.table.setColumnCount(2 + len(inputfile['objectives']))
         headers = ['Generations', 'Evaluations'] + \
             ["{}{}".format('+-'[obj['weight'] < 0], obj['name'])
@@ -101,6 +108,11 @@ class GAUDInspectProgressController(object):
         for i in [0, 2, 3]:
             self.view.tabber.setTabEnabled(i, False)
 
+        self.view.stats.chart.configure_plot(
+            inputfile['ga']['gens'],
+            inputfile['objectives'],
+            inputfile['ga']['pop'])
+
         self.view.status('Running new job')
         self.tab.textbox.append('Running new job')
 
@@ -111,3 +123,4 @@ class GAUDInspectProgressController(object):
             self.view.tabber.setTabEnabled(i, True)
         self.view.status('Job Finished!')
         self.tab.textbox.append('Job Finished!')
+        self.tab.progressbar.hide()

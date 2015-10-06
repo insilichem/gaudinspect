@@ -34,9 +34,15 @@ class GAUDInspectViewProgress(QtGui.QWidget):
         self.tabber = QtGui.QTabWidget()
         self.table = QtGui.QTableWidget()
         self.table.verticalHeader().setVisible(False)
+        self.table.setSortingEnabled(False)
+        self.table.setAlternatingRowColors(True)
+        self.table.setShowGrid(False)
+        self.table.setEditTriggers(QtGui.QAbstractItemView.NoEditTriggers)
+        self.table.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         self.grid.addWidget(self.table, 1, 0)
 
         self.textbox = QtGui.QTextEdit(self)
+        self.textbox.setFontFamily('Monospace')
         self.textbox.setReadOnly(True)
         self.textbox.setWordWrapMode(QtGui.QTextOption.NoWrap)
 
@@ -52,4 +58,5 @@ class GAUDInspectViewProgress(QtGui.QWidget):
         self.btn_layout.addStretch(1)
 
         self.progressbar = QtGui.QProgressBar()
+        self.progressbar.hide()
         self.grid.addWidget(self.progressbar, 3, 0)
