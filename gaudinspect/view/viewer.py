@@ -48,8 +48,9 @@ class GAUDInspectViewViewer(QChemlabWidget):
             mol = self.molecules[path]
         except KeyError:
             mol = self.molecules[path] = datafile(path).read('molecule')
-            mol.renderer = self.RENDERERS[renderer](self, mol.r_array, mol.type_array,
-                                                    mol.bonds, color_scheme=self.COLORS[color])
+            mol.renderer = self.RENDERERS[renderer](
+                self, mol.r_array, mol.type_array, mol.bonds,
+                color_scheme=self.COLORS[color])
         self.renderers.append(mol.renderer)
         self.update()
 
