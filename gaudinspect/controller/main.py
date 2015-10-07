@@ -28,9 +28,9 @@ class GAUDInspectController(object):
         self.progress = GAUDInspectProgressController(self, view)
         self.details = None
         self.results = GAUDInspectResultsController(self, view)
-        self.settings()
+        # self.settings()
         self.signals()
-        self.check_firstrun()
+        # self.check_firstrun()
 
     def settings(self):
         configured = self.app.settings.value("general/configured")
