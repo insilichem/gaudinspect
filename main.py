@@ -16,8 +16,6 @@ def main():
         app = QtGui.QApplication.instance()
 
     app.settings = QtCore.QSettings("GAUDI", "GAUDInspect")
-    app.settings.setValue(
-        "general/gaudipath", "C:/Users/Jaime/dev/gaudi/gaudi")
     model, view = GAUDInspectModel(app=app), GAUDInspectView(app=app)
     controller = GAUDInspectController(model, view, app=app)
     sys.exit(app.exec_())
