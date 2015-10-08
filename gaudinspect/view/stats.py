@@ -46,15 +46,19 @@ class GAUDInspectChartCanvas(QtGui.QWidget):
     def initUI(self):
         plt.style.use('fivethirtyeight')
         plt.rc('font', size=12)
-
         self.figure = plt.figure()
+        self.canvas = FigureCanvas(self.figure)
+
         self.figure.patch.set_alpha(0)
         self.ax1 = self.figure.add_subplot(
             111, axis_bgcolor='none',
             xlim=(0, 20), ylim=(0, 1000),
             xlabel='Generations')
         self.ax2 = self.ax1.twinx()
-        self.canvas = FigureCanvas(self.figure)
+        self.legend = plt.legend(
+            *self.ax1.get_legend_handles_labels(),
+            loc='upper left', fancybox=True, framealpha=0.8)
+
         # set the layout
         layout = QtGui.QVBoxLayout()
         layout.addWidget(self.canvas)
@@ -62,7 +66,11 @@ class GAUDInspectChartCanvas(QtGui.QWidget):
         self.figure.tight_layout()
 
     def configure_plot(self, generations, objectives, population):
-        self.ax1.clear()
+        # Clear eveything
+        self.legend.remove()
+        self.ax1.cla()
+        self.ax2.cla()
+
         self.ax1.set_axis_bgcolor('none')
         self.ax1.set_xlabel('Generations')
         self.ax1.set_ylabel('Average score')
@@ -95,7 +103,7 @@ class GAUDInspectChartCanvas(QtGui.QWidget):
 
         # Move legend to top
         self.ax1.add_artist(self.legend)
-        self.ax2.legend = None
+        self.ax2.legend_ = None
 
         self.figure.tight_layout()
         self.canvas.draw()

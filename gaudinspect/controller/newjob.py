@@ -256,7 +256,8 @@ class GAUDInspectNewJobController(QtCore.QObject):
     def _choose_path(self):
         path = QtGui.QFileDialog.getExistingDirectory(
             self.tab, 'Choose a directory', os.getcwd())
-        self.tab.general_outputpath_field.setText(path)
+        if path:
+            self.tab.general_outputpath_field.setText(path)
 
     def _save_and_run(self):
         if self.MODIFIED:

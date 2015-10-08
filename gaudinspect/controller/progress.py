@@ -15,6 +15,7 @@ class GAUDInspectProgressController(object):
         self.tab = self.view.tabber.tabs[1]
         self.process = QtCore.QProcess(self.view)
         self.history = []
+        self.inputfile = {}
         self.signals()
 
     def signals(self):
@@ -42,7 +43,8 @@ class GAUDInspectProgressController(object):
     def open_file(self):
         path, f = QtGui.QFileDialog.getOpenFileName(
             self.view, 'Open GAUDI Input', os.getcwd(), 'GAUDI Input (*.in.gaudi)')
-        self.tab.input_fld.setText(path)
+        if path:
+            self.tab.input_fld.setText(path)
 
     def report(self):
         # Raw output
@@ -86,18 +88,18 @@ class GAUDInspectProgressController(object):
         # After GAUDI started
         path = self.tab.input_fld.text()
         with open(path) as f:
-            inputfile = yaml.load(f)
+            self.inputfile = yaml.load(f)
         self.tab.progressbar.reset()
         self.tab.progressbar.show()
-        self.tab.progressbar.setMaximum(inputfile['ga']['gens'])
+        self.tab.progressbar.setMaximum(self.inputfile['ga']['gens'])
 
         self.tab.table.clear()
         self.tab.table.setRowCount(0)
         self.tab.table.setColumnCount(0)
-        self.tab.table.setColumnCount(2 + len(inputfile['objectives']))
+        self.tab.table.setColumnCount(2 + len(self.inputfile['objectives']))
         headers = ['Generations', 'Evaluations'] + \
             ["{}{}".format('+-'[obj['weight'] < 0], obj['name'])
-             for obj in inputfile['objectives']]
+             for obj in self.inputfile['objectives']]
         self.tab.table.setHorizontalHeaderLabels(headers)
 
         self.tab.textbox.clear()
@@ -108,9 +110,9 @@ class GAUDInspectProgressController(object):
             self.view.tabber.setTabEnabled(i, False)
 
         self.view.stats.chart.configure_plot(
-            inputfile['ga']['gens'],
-            inputfile['objectives'],
-            inputfile['ga']['pop'])
+            self.inputfile['ga']['gens'],
+            self.inputfile['objectives'],
+            self.inputfile['ga']['pop'])
 
         self.view.status('Running new job')
         self.tab.textbox.append('Running new job')
@@ -123,3 +125,10 @@ class GAUDInspectProgressController(object):
         self.view.status('Job Finished!')
         self.tab.textbox.append('Job Finished!')
         self.tab.progressbar.hide()
+
+        # Load results
+        basedir = os.path.dirname(self.tab.input_fld.text())
+        outputdir = self.inputfile['general']['outputpath']
+        name = self.inputfile['general']['name'] + '.out.gaudi'
+        path = os.path.normpath(os.path.join(basedir, outputdir, name))
+        self.parent._open_file(path)
