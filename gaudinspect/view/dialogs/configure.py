@@ -120,6 +120,7 @@ class GAUDInspectConfiguration(QtGui.QDialog):
 
     def save_settings(self):
         settings = self.parent().app.settings
+        settings.setValue("general/configured", True)
         for key in settings.allKeys():
             k1, k2 = [s.lower() for s in key.split("/")]
             try:
