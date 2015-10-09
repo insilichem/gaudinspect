@@ -5,8 +5,6 @@ default = {
 
     "general/configured": True,
     "general/gaudipath": "",
-
+    "general/chimerapath": "",
     "viewer/backgroundcolor": (0, 0, 0),
-
-
 }

@@ -13,6 +13,7 @@ class GAUDInspectViewMenu(object):
     def __init__(self, parent=None):
         self.parent = parent
         self.initUI()
+        self._gray_out()
 
     def initUI(self):
         # Top menu - File
@@ -88,3 +89,25 @@ class GAUDInspectViewMenu(object):
         self.help.addSeparator()
         self.help.about = QAction('About', self.help)
         self.help.addAction(self.help.about)
+
+    def _gray_out(self):
+        items = [
+            self.file.new,
+            self.file.import_state,
+            self.file.export_state,
+            self.edit.project_settings,
+            self.edit.project_advanced,
+            self.viewer.configuration,
+            self.controls.run,
+            self.controls.finish,
+            self.controls.cancel,
+            self.controls.pause,
+            self.controls.pause_next,
+            self.controls.forward,
+            self.controls.live_stats,
+            self.help.help,
+            self.help.website,
+            self.help.about
+        ]
+        for item in items:
+            item.setEnabled(False)

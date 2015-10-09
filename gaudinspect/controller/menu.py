@@ -33,10 +33,16 @@ class GAUDInspectMenuController(object):
 
     def slots(self):
         self.open_file_dialog = self._open_file()
-        self.configure_dialog = GAUDInspectConfiguration(self.view).exec_
+        self.configure_dialog = self._configure
 
     def _open_file(self):
         dialog = QFileDialog(self.view, "Open GAUDI file", os.getcwd(),
                              "GAUDI files (*.gaudi);; GAUDI output (*.out.gaudi);; GAUDI input (*.in.gaudi)")
         dialog.setFileMode(QFileDialog.ExistingFile)
         return dialog
+
+    def _configure(self):
+        dialog = GAUDInspectConfiguration(self.view)
+        returned = dialog.exec_()
+        if returned == dialog.Accepted:
+            dialog.save_settings()

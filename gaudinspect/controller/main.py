@@ -1,15 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from .. import configuration
-
 from .results import GAUDInspectResultsController
 from .newjob import GAUDInspectNewJobController
 from .menu import GAUDInspectMenuController
 from .progress import GAUDInspectProgressController
 from ..model.main import GAUDInspectModel
+from ..view.dialogs.configure import GAUDInspectConfiguration
 
-from PySide import QtGui, QtCore
+from PySide import QtGui
 
 
 class GAUDInspectController(object):
@@ -28,15 +27,15 @@ class GAUDInspectController(object):
         self.progress = GAUDInspectProgressController(self, view)
         self.details = None
         self.results = GAUDInspectResultsController(self, view)
-        # self.settings()
+        # Start things up
+        self.settings()
         self.signals()
-        # self.check_firstrun()
+        self.check_firstrun()
 
     def settings(self):
         configured = self.app.settings.value("general/configured")
         if not configured:
-            for k, v in configuration.default.items():
-                self.app.settings.setValue(k, v)
+            GAUDInspectConfiguration.restore_settings()
 
     def check_firstrun(self):
         configured = self.app.settings.value("general/configured")
@@ -79,17 +78,10 @@ class GAUDInspectController(object):
 
     # messages
     def _configure_msg(self):
-        msg = "GAUDInspect needs some configuration before you can use it. Go to Edit - Configuration to fill in the details."
-        dialog = QtGui.QDialog(self.view)
-        dialog.canvas = QtGui.QWidget(dialog)
-        dialog.layout = QtGui.QVBoxLayout(dialog.canvas)
-        dialog.label = QtGui.QLabel(msg)
-        dialog.buttons = QtGui.QDialogButtonBox(
-            QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.Cancel,
-            QtCore.Qt.Horizontal, dialog)
-        dialog.buttons.accepted.connect(dialog.accept)
-        dialog.buttons.rejected.connect(dialog.reject)
-        dialog.layout.addWidget(dialog.label)
-        dialog.layout.addWidget(dialog.buttons)
-        dialog.adjustSize()
-        dialog.exec_()
+        msg = """GAUDInspect needs some configuration before you can use it.
+Go to Edit - Configuration to fill in the details."""
+        returned = QtGui.QMessageBox.information(
+            self.view, "GAUDInspect Configuration",
+            msg, QtGui.QMessageBox.Ok | QtGui.QMessageBox.Ignore)
+        if returned == QtGui.QMessageBox.Ok:
+            self.menu._configure()
