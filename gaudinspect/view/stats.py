@@ -11,16 +11,15 @@ from matplotlib.backends.backend_qt4agg import FigureCanvasQTAgg as FigureCanvas
 import numpy
 
 
-def get(parent=None):
-    return GAUDInspectViewStats(parent=parent)
+def get():
+    return GAUDInspectViewStats()
 
 
 class GAUDInspectViewStats(QtGui.QWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self):
         super(GAUDInspectViewStats, self).__init__()
-        self.setParent(parent)
-        self.parent = parent
+        # self.parent = parent
         self.hide()
         self.initUI()
 

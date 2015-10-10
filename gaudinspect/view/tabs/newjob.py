@@ -5,15 +5,15 @@ from PySide import QtGui, QtCore
 from collections import OrderedDict
 
 
-def get(parent=None):
-    return GAUDInspectViewNewJob(parent=parent)
+def get():
+    return GAUDInspectViewNewJob()
 
 
 class GAUDInspectViewNewJob(QtGui.QWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self):
         super(GAUDInspectViewNewJob, self).__init__()
-        self.parent = parent
+        # self.parent = parent
         self.title = "New Job"
         self.dialogs()
         self.initUI()

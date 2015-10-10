@@ -12,8 +12,8 @@ from chemlab.graphics.postprocessing import SSAOEffect, OutlineEffect, FXAAEffec
 from chemlab.io import datafile
 
 
-def get(context, parent=None):
-    return GAUDInspectViewViewer(context, parent)
+def get(context):
+    return GAUDInspectViewViewer(context)
 
 
 class GAUDInspectViewViewer(QChemlabWidget):
@@ -27,9 +27,9 @@ class GAUDInspectViewViewer(QChemlabWidget):
         'light': colors.light_atom_map
     }
 
-    def __init__(self, context, parent=None):
-        super(GAUDInspectViewViewer, self).__init__(context, parent)
-        self.parent = parent
+    def __init__(self, context):
+        super(GAUDInspectViewViewer, self).__init__(context)
+        # self.parent = parent
         self.molecules = {}
         context.makeCurrent()
         self.initializeGL()
@@ -134,10 +134,10 @@ class GAUDInspectViewViewer(QChemlabWidget):
                 OutlineEffect, color=(0, 0, 0))  # black outlines
             self.add_post_processing(FXAAEffect)  # fast antialiasing
             self.update()
-            self.parent.status('Enabled effects')
+            self.parent().status('Enabled effects')
 
     def disable_effects(self):
         if self.renderers:
             del self.post_processing[:]
             self.update()
-            self.parent.status('Disabled effects')
+            self.parent().status('Disabled effects')

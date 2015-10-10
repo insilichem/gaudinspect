@@ -4,15 +4,15 @@
 from PySide import QtGui
 
 
-def get(parent=None):
-    return GAUDInspectViewProgress(parent=parent)
+def get():
+    return GAUDInspectViewProgress()
 
 
 class GAUDInspectViewProgress(QtGui.QWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self):
         super(GAUDInspectViewProgress, self).__init__()
-        self.parent = parent
+        # self.parent = parent
         self.title = "Progress"
         self.initUI()
 

@@ -2,18 +2,18 @@
 # -*- coding: utf-8 -*-
 
 from PySide import QtGui
-from PySide.QtCore import Qt, Signal
+from PySide.QtCore import Qt
 
 
-def get(parent=None):
-    return GAUDInspectViewResults(parent=parent)
+def get():
+    return GAUDInspectViewResults()
 
 
 class GAUDInspectViewResults(QtGui.QWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self):
         super(GAUDInspectViewResults, self).__init__()
-        self.parent = parent
+        # self.parent = parent
         self.title = "Results"
         self.initUI()
 

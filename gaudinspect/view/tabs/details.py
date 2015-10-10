@@ -4,15 +4,15 @@
 from PySide import QtGui
 
 
-def get(parent=None):
-    return GAUDInspectViewDetails(parent=parent)
+def get():
+    return GAUDInspectViewDetails()
 
 
 class GAUDInspectViewDetails(QtGui.QWidget):
 
-    def __init__(self, parent=None):
+    def __init__(self):
         super(GAUDInspectViewDetails, self).__init__()
-        self.parent = parent
+        # self.parent = parent
         self.title = "Details"
         self.initUI()
 

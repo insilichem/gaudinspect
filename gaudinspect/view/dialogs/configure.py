@@ -38,7 +38,7 @@ class GAUDInspectConfiguration(QtGui.QDialog):
         # Fields
         self.general_gaudipath = self.browse_field(
             'GAUDI', self.tab_general_group_layout)
-        self.general_chimera = self.browse_field(
+        self.general_chimerapath = self.browse_field(
             'Chimera', self.tab_general_group_layout)
 
         # TAB 2 - Viewer Settings

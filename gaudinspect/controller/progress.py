@@ -32,7 +32,7 @@ class GAUDInspectProgressController(object):
         else:
             self.tab.input_fld.setText(path)
 
-        chimera = self.parent.app.settings.value("general/chimera")
+        chimera = self.parent.app.settings.value("general/chimerapath")
         gaudi = self.parent.app.settings.value(
             "general/gaudipath") + '/launch.py'
         args = ['--debug', '--nogui', '--silent', '--script',
@@ -92,6 +92,7 @@ class GAUDInspectProgressController(object):
         self.tab.progressbar.reset()
         self.tab.progressbar.show()
         self.tab.progressbar.setMaximum(self.inputfile['ga']['gens'])
+        self.tab.progressbar.setValue(0)
 
         self.tab.table.clear()
         self.tab.table.setRowCount(0)
