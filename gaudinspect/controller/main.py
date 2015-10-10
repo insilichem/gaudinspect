@@ -6,9 +6,9 @@ from .newjob import GAUDInspectNewJobController
 from .menu import GAUDInspectMenuController
 from .progress import GAUDInspectProgressController
 from ..model.main import GAUDInspectModel
-from ..view.dialogs.configure import GAUDInspectConfiguration
+from .. import configuration
 
-from PySide import QtGui
+from PySide import QtGui, QtCore
 
 
 class GAUDInspectController(object):
@@ -33,13 +33,15 @@ class GAUDInspectController(object):
         self.check_firstrun()
 
     def settings(self):
-        configured = self.app.settings.value("general/configured")
+        configured = self.app.settings.value("flags/configured")
         if not configured:
-            GAUDInspectConfiguration.restore_settings()
+            settings = QtCore.QSettings()
+            for k, v in configuration.default.items():
+                settings.setValue(k, v)
 
     def check_firstrun(self):
-        configured = self.app.settings.value("general/configured")
-        path = self.app.settings.value("general/gaudipath")
+        configured = self.app.settings.value("flags/configured")
+        path = self.app.settings.value("paths/gaudi")
 
         if not configured or not path:
             self._configure_msg()

@@ -2,6 +2,8 @@
 # -*- coding: utf-8 -*-
 
 import os
+import yaml
+
 from PySide import QtGui, QtCore
 from ... import configuration
 
@@ -12,6 +14,7 @@ class GAUDInspectConfiguration(QtGui.QDialog):
         super(GAUDInspectConfiguration, self).__init__(parent=parent)
         self.setWindowTitle("Edit configuration - GAUDInspect")
         self.setModal(True)
+        self.settings = QtCore.QSettings()
         self.initUI()
         self.load_settings()
 
@@ -36,9 +39,9 @@ class GAUDInspectConfiguration(QtGui.QDialog):
         self.tab_general_group_layout = QtGui.QVBoxLayout(
             self.tab_general_group)
         # Fields
-        self.general_gaudipath = self.browse_field(
+        self.paths_gaudi = self.browse_field(
             'GAUDI', self.tab_general_group_layout)
-        self.general_chimerapath = self.browse_field(
+        self.paths_chimera = self.browse_field(
             'Chimera', self.tab_general_group_layout)
 
         # TAB 2 - Viewer Settings
@@ -108,27 +111,26 @@ class GAUDInspectConfiguration(QtGui.QDialog):
             w.fld.setText(path)
 
     def load_settings(self):
-        settings = self.parent().app.settings
-        for key in settings.allKeys():
+        for key in self.settings.allKeys():
             k1, k2 = [s.lower() for s in key.split("/")]
             try:
                 val = getattr(self, "{}_{}".format(k1, k2))
             except AttributeError:
                 pass
             else:
-                val.fld.setText(str(settings.value(key)))
+                val.fld.setText(str(self.settings.value(key)))
 
     def save_settings(self):
-        settings = self.parent().app.settings
-        settings.setValue("general/configured", True)
-        for key in settings.allKeys():
+        self.settings.setValue("flags/configured", True)
+        for key in self.settings.allKeys():
             k1, k2 = [s.lower() for s in key.split("/")]
             try:
                 val = getattr(self, "{}_{}".format(k1, k2))
             except AttributeError:
                 pass
             else:
-                settings.setValue(key, val.fld.text())
+                self.settings.setValue(key, yaml.load(val.fld.text()))
+        self.settings.sync()
 
     def restore_settings(self):
         returned = QtGui.QMessageBox.question(
@@ -136,7 +138,7 @@ class GAUDInspectConfiguration(QtGui.QDialog):
             "All parameters will be overriden with default values. Are you sure?",
             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
         if returned == QtGui.QMessageBox.Yes:
-            settings = self.parent().app.settings
             for k, v in configuration.default.items():
-                settings.setValue(k, v)
+                self.settings.setValue(k, v)
+            self.settings.sync()
             self.load_settings()

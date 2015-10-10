@@ -5,13 +5,12 @@ import os
 import random
 import string
 import yaml
-from collections import OrderedDict
 from copy import deepcopy
-import subprocess
 
 from PySide import QtGui, QtCore
 
 from ..view.dialogs.extension import GAUDInspectConfigureExtension
+from ..configuration import ADVANCED_OPTIONS_DEFAULT
 
 
 class GAUDInspectNewJobController(QtCore.QObject):
@@ -23,51 +22,6 @@ class GAUDInspectNewJobController(QtCore.QObject):
         'general_outputpath_field': ('general', 'outputpath')
     }
 
-    ADVANCED_OPTIONS_DEFAULT = OrderedDict([
-        ('precision', [
-            2,
-            'Number of decimal numbers in output']),
-        ('compress', [
-            1,
-            'Apply ZIP compression to results']),
-        ('mu', [
-            0.75,
-            'Percentage of population to select for the next generation']),
-        ('lambda_', [
-            0.75,
-            'Number of individuals (in terms of current population percentage) \nto create for at each generation']),
-        ('mut_eta', [
-            5,
-            'Crowding degree of the mutation. A high eta will produce children \nresembling to their parents, while a small eta will produce solutions \nmuch more different']),
-        ('mut_pb', [
-            0.10,
-            'The probability that an offspring is produced by mutation']),
-        ('mut_indpb', [
-            0.2,
-            'The probability that a gene of a mutating individual is actually \nmutated']),
-        ('cx_eta', [
-            5,
-            'Crowding degree of the crossover. A high eta will produce children \nresembling to their parents, while a small eta will produce solutions \nmuch more different']),
-        ('cx_pb', [
-            0.8,
-            'The probability that an offspring is produced by crossover']),
-        ('history', [
-            False,
-            'Record full history of evolution']),
-        ('pareto', [
-            False,
-            'Use Pareto Front results (True) or Hall Of Fame results (False)']),
-        ('similarity', [
-            'gaudi.similarity.rmsd',
-            'Function of similarity that will be used to discard similar \nindividuals']),
-        ('similarity_args', [
-            'Ligand, 0.5',
-            'Positional arguments of similarity function']),
-        ('similarity_kwargs', [
-            '',
-            'Optional arguments of similarity function'])
-    ])
-
     file_ready = QtCore.Signal(str)
 
     def __init__(self, parent, view, model=None):
@@ -77,7 +31,7 @@ class GAUDInspectNewJobController(QtCore.QObject):
         self.view = view
         self.tab = self.view.tabber.tabs[0]
         self.signals()
-        self.advanced_options = deepcopy(self.ADVANCED_OPTIONS_DEFAULT)
+        self.advanced_options = deepcopy(ADVANCED_OPTIONS_DEFAULT)
         if model:
             self.set_model(model)
         self.tab.advanced_dialog.fill_table(self.advanced_options)

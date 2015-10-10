@@ -32,9 +32,9 @@ class GAUDInspectProgressController(object):
         else:
             self.tab.input_fld.setText(path)
 
-        chimera = self.parent.app.settings.value("general/chimerapath")
+        chimera = self.parent.app.settings.value("paths/chimera")
         gaudi = self.parent.app.settings.value(
-            "general/gaudipath") + '/launch.py'
+            "paths/gaudi") + '/launch.py'
         args = ['--debug', '--nogui', '--silent', '--script',
                 "{} {}".format(gaudi, path)]
 
