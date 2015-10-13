@@ -19,11 +19,13 @@ class GAUDInspectProgressController(GAUDInspectBaseChildController):
         self.process = QtCore.QProcess(self.view)
         self.history = []
         self.inputfile = {}
-        self.signals()
         self._load_recent_files()
+        self.signals()
 
     def signals(self):
         self.parent().newjob.file_ready.connect(self.run)
+        self.tab.input_fld.currentIndexChanged.connect(
+            self.open_file_from_dropdown)
         self.tab.input_btn.clicked.connect(self.open_file)
         self.tab.input_run.clicked.connect(self.run)
         self.process.readyReadStandardOutput.connect(self.report)
@@ -43,14 +45,6 @@ class GAUDInspectProgressController(GAUDInspectBaseChildController):
                 "{} {}".format(gaudi, path)]
 
         self.process.start(chimera, args)
-
-    def open_file(self):
-        path, f = QtGui.QFileDialog.getOpenFileName(
-            self.view, 'Open GAUDI Input', os.getcwd(), 'GAUDI Input (*.in.gaudi)')
-        if path:
-            self.tab.input_fld.setEditText(path)
-            self.parent()._open_file(path)
-            self.set_current()
 
     def report(self):
         # Raw output
@@ -90,6 +84,21 @@ class GAUDInspectProgressController(GAUDInspectBaseChildController):
             QtCore.QTimer.singleShot(10, self.tab.table.scrollToBottom)
 
     # Slots
+    def open_file(self):
+        path, f = QtGui.QFileDialog.getOpenFileName(
+            self.view, 'Open GAUDI Input', os.getcwd(), 'GAUDI Input (*.in.gaudi)')
+        self.post_open_file(path)
+
+    def open_file_from_dropdown(self, index):
+        if index >= 0:
+            path = self.tab.input_fld.itemText(index)
+            self.post_open_file(path)
+
+    def post_open_file(self, path):
+        if path:
+            self.parent()._open_file(path)
+            self.set_current()
+
     def process_started(self):
         # After GAUDI started
         path = self.tab.input_fld.currentText()
