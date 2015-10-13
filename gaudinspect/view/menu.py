@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from PySide.QtGui import QAction
+from PySide.QtGui import QAction, QMenu
 
 
 def get(parent=None):
@@ -22,9 +22,13 @@ class GAUDInspectViewMenu(object):
         self.file.addAction(self.file.new)
         self.file.open = QAction('Open', self.file)
         self.file.addAction(self.file.open)
+        self.file.open_recent = QMenu("Open recent...")
+        self.file.addMenu(self.file.open_recent)
         self.file.save = QAction('Save', self.file)
         self.file.addAction(self.file.save)
+
         self.file.addSeparator()
+
         self.file.import_state = QAction('Import state', self.file)
         self.file.addAction(self.file.import_state)
         self.file.export_state = QAction('Export state', self.file)
