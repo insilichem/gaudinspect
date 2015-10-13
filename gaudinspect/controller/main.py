@@ -77,6 +77,7 @@ class GAUDInspectController(QtCore.QObject):
             self.results.set_model(model)
         elif f.endswith('.in.gaudi'):
             self.newjob.set_model(model)
+            self.progress.tab.input_fld.setEditText(f)
         self.view.status('Loaded file {}'.format(f))
 
     # messages
