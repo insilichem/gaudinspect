@@ -23,8 +23,12 @@ class GAUDInspectViewResults(QtGui.QWidget):
         ###
         self.grid = QtGui.QGridLayout(self)
 
+        self.infotip = QtGui.QLabel(
+            "<center>Drag your file here to load results</center>")
+        self.grid.addWidget(self.infotip, 0, 0)
+
         self.table = QtGui.QTableView()
-        self.grid.addWidget(self.table, 0, 0)
+        self.grid.addWidget(self.table, 1, 0)
         # Configure table
         self.table.verticalHeader().setVisible(False)
         self.table.horizontalHeader().setDefaultAlignment(Qt.AlignLeft)
@@ -35,7 +39,7 @@ class GAUDInspectViewResults(QtGui.QWidget):
         self.table.setSelectionBehavior(QtGui.QAbstractItemView.SelectRows)
         # Add filter widget
         self.filter_group = GAUDInspectViewResultsFilter('Filter results')
-        self.grid.addWidget(self.filter_group, 1, 0)
+        self.grid.addWidget(self.filter_group, 2, 0)
 
 
 class GAUDInspectViewResultsFilter(QtGui.QGroupBox):

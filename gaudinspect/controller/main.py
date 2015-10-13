@@ -11,22 +11,23 @@ from .. import configuration
 from PySide import QtGui, QtCore
 
 
-class GAUDInspectController(object):
+class GAUDInspectController(QtCore.QObject):
 
     """
     Document this!
     """
 
     def __init__(self, model, view, app=None):
+        super().__init__(app)
         self.app = app
         self.model = model
         self.view = view
         # Child controllers
-        self.menu = GAUDInspectMenuController(self, view)
-        self.newjob = GAUDInspectNewJobController(self, view)
-        self.progress = GAUDInspectProgressController(self, view)
+        self.menu = GAUDInspectMenuController(parent=self, view=view)
+        self.newjob = GAUDInspectNewJobController(parent=self, view=view)
+        self.progress = GAUDInspectProgressController(parent=self, view=view)
         self.details = None
-        self.results = GAUDInspectResultsController(self, view)
+        self.results = GAUDInspectResultsController(parent=self, view=view)
         # Start things up
         self.settings()
         self.signals()

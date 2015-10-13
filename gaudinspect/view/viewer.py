@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from PySide import QtGui
+from PySide import QtGui, QtCore
 from PySide.QtCore import Qt
 
 import numpy as np
@@ -12,8 +12,8 @@ from chemlab.graphics.postprocessing import SSAOEffect, OutlineEffect, FXAAEffec
 from chemlab.io import datafile
 
 
-def get(context):
-    return GAUDInspectViewViewer(context)
+def get(context, view=None):
+    return GAUDInspectViewViewer(context, view=view)
 
 
 class GAUDInspectViewViewer(QChemlabWidget):
@@ -27,9 +27,9 @@ class GAUDInspectViewViewer(QChemlabWidget):
         'light': colors.light_atom_map
     }
 
-    def __init__(self, context):
-        super(GAUDInspectViewViewer, self).__init__(context)
-        # self.parent = parent
+    def __init__(self, context, view=None):
+        super().__init__(context)
+        self.view = view
         self.molecules = {}
         context.makeCurrent()
         self.initializeGL()
@@ -39,7 +39,11 @@ class GAUDInspectViewViewer(QChemlabWidget):
         self.setMinimumWidth(500)
         self.setSizePolicy(QtGui.QSizePolicy.Expanding,
                            QtGui.QSizePolicy.Preferred)
-        self.background_color = (0, 0, 0, 0)
+        self.background_color = self._bgcolor_from_settings()
+
+    def _bgcolor_from_settings(self):
+        return [float(i) for i in QtCore.QSettings().value(
+            "viewer/backgroundcolor")] + [0]
 
     # Controller methods
     def add_molecule(self, path, renderer='ballandstick',
@@ -134,10 +138,10 @@ class GAUDInspectViewViewer(QChemlabWidget):
                 OutlineEffect, color=(0, 0, 0))  # black outlines
             self.add_post_processing(FXAAEffect)  # fast antialiasing
             self.update()
-            self.parent().status('Enabled effects')
+            self.view.status('Enabled effects')
 
     def disable_effects(self):
         if self.renderers:
             del self.post_processing[:]
             self.update()
-            self.parent().status('Disabled effects')
+            self.view.status('Disabled effects')

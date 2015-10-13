@@ -135,7 +135,8 @@ class GAUDInspectConfiguration(QtGui.QDialog):
     def restore_settings(self):
         returned = QtGui.QMessageBox.question(
             self, "Are your sure?",
-            "All parameters will be overriden with default values. Are you sure?",
+            "All parameters will be overriden with default values. "
+            "This action cannot be undone. Are you sure?",
             QtGui.QMessageBox.Yes | QtGui.QMessageBox.No)
         if returned == QtGui.QMessageBox.Yes:
             for k, v in configuration.default.items():

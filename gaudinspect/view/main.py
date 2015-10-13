@@ -32,7 +32,7 @@ class GAUDInspectView(QtGui.QMainWindow):
 
         # Main layout
         self.left = QtGui.QWidget()
-        self.viewer = viewer.get(self.glcontext)
+        self.viewer = viewer.get(self.glcontext, self)
         self.stats = stats.get()
         self.tabber = tabber.get()
         self.statusbar = self.statusBar()

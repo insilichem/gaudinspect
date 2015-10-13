@@ -12,7 +12,6 @@ class GAUDInspectViewDetails(QtGui.QWidget):
 
     def __init__(self):
         super(GAUDInspectViewDetails, self).__init__()
-        # self.parent = parent
         self.title = "Details"
         self.initUI()
 
@@ -22,12 +21,16 @@ class GAUDInspectViewDetails(QtGui.QWidget):
         ###
         self.grid = QtGui.QGridLayout(self)
 
+        self.warning = QtGui.QLabel(
+            "<p align='center'><b>This tab in only a stub</b></p>"
+            "<p align='center'><i>Deep changes need to be done in GAUDI to implement this feature.<br />"
+            "Consider this a preview of future functionality.</i></p><hr />")
+        self.grid.addWidget(self.warning, 0, 0, 1, 2)
+
         # Tab 3 - Column 1 - Select individual
         self.col1 = QtGui.QVBoxLayout()
-        self.grid.addLayout(self.col1, 0, 0)
+        self.grid.addLayout(self.col1, 1, 0)
         self.col1_ind_box = QtGui.QGroupBox('Individuals')
-        # self.col1_ind_box.setSizePolicy(QtGui.QSizePolicy.Fixed,
-        # QtGui.QSizePolicy.Preferred)
         self.col1_ind_layout = QtGui.QVBoxLayout(self.col1_ind_box)
         self.col1.addWidget(self.col1_ind_box)
         self.col1_toolbox = QtGui.QToolBox()
@@ -61,10 +64,8 @@ class GAUDInspectViewDetails(QtGui.QWidget):
 
         # Tab 3 - Column 2 - the environment
         self.col2 = QtGui.QVBoxLayout()
-        self.grid.addLayout(self.col2, 0, 1)
+        self.grid.addLayout(self.col2, 1, 1)
         self.col2_env_box = QtGui.QGroupBox('Environment')
-        # self.col2_env_box.setSizePolicy(QtGui.QSizePolicy.Fixed,
-        # QtGui.QSizePolicy.Preferred)
         self.col2_env_layout = QtGui.QVBoxLayout(self.col2_env_box)
         self.col2.addWidget(self.col2_env_box)
         self.col2_env_table = QtGui.QTableWidget(10, 2)

@@ -1,48 +1,49 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-from PySide.QtCore import Qt
-from PySide import QtGui
 from itertools import cycle
 import operator
 
+from PySide.QtCore import Qt
+from PySide import QtGui
 
-class GAUDInspectResultsController(object):
+from .base import GAUDInspectBaseChildController
 
-    def __init__(self, parent, view, model=None,
-                 renderer='ballandstick', color='default'):
-        self.parent = parent
-        self.model = model
-        self.view = view
-        self.tab = self.view.tabber.tabs[3]
-        self.tableview = self.tab.table
+
+class GAUDInspectResultsController(GAUDInspectBaseChildController):
+
+    def __init__(self, renderer='ballandstick', color='default', **kwargs):
+        super().__init__(**kwargs)
+        self.tabindex = 3
+        self.tab = self.view.tabber.tabs[self.tabindex]
+        self.table = self.tab.table
         self.filters = self.tab.filter_group
+
         # Some parameters
         self.renderer = renderer
         self.colors = sorted(self.view.viewer.COLORS.keys())
         self.selected = []
         self.unzipped = {}
 
-        if model:
-            self.set_model(model)
+        if self.model:
+            self.set_model(self.model)
 
     def set_model(self, model):
         # Models
         self.model = model
         self.proxy = CustomSortFilterProxyModel(self.model)
         self.proxy.setSourceModel(self.model)
-        self.tableview.setModel(self.proxy)
-        self.tableview.sortByColumn(0, Qt.AscendingOrder)
+        self.table.setModel(self.proxy)
+        self.table.sortByColumn(0, Qt.AscendingOrder)
         self.connect_model_signals()
         self.filters.show()
-        self.view.tabber.setCurrentIndex(3)
-        for i in range(3):
-            self.view.tabber.setTabEnabled(i, False)
+        self.tab.infotip.hide()
+        self.set_active()
 
     def connect_model_signals(self):
         if not self.model:
             return
-        selectionModel = self.tableview.selectionModel()
+        selectionModel = self.table.selectionModel()
         selectionModel.selectionChanged.connect(self.selection_changed)
 
         self.filters.filter_add.clicked.connect(self.fill_filters)
@@ -61,7 +62,7 @@ class GAUDInspectResultsController(object):
         self.filters.hide()
 
         # Disconnect signals
-        selectionModel = self.tableview.selectionModel()
+        selectionModel = self.table.selectionModel()
         selectionModel.selectionChanged.disconnect(self.selection_changed)
         self.filters.filter_add.clicked.disconnect(self.fill_filters)
         self.filters.filter_btn.clicked.disconnect(self.apply_filters)
@@ -73,8 +74,8 @@ class GAUDInspectResultsController(object):
         self.view.viewer.update()
 
         # Reenable all tabs
-        for i in range(self.view.tabber.count()):
-            self.view.tabber.setTabEnabled(i, True)
+        self.tab.infotip.show()
+        self.restore_enabled()
 
     def selection_changed(self, selected, deselected):
         self.view.viewer.clear()

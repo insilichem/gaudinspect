@@ -3,23 +3,27 @@
 
 import os
 import yaml
+
 from PySide import QtCore, QtGui
 
+from .base import GAUDInspectBaseChildController
 
-class GAUDInspectProgressController(object):
 
-    def __init__(self, parent, view, model=None):
-        self.parent = parent
-        self.model = model
-        self.view = view
-        self.tab = self.view.tabber.tabs[1]
+class GAUDInspectProgressController(GAUDInspectBaseChildController):
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.tabindex = 1
+        self.tab = self.view.tabber.tabs[self.tabindex]
+
         self.process = QtCore.QProcess(self.view)
         self.history = []
         self.inputfile = {}
         self.signals()
+        self._load_recent_files()
 
     def signals(self):
-        self.parent.newjob.file_ready.connect(self.run)
+        self.parent().newjob.file_ready.connect(self.run)
         self.tab.input_btn.clicked.connect(self.open_file)
         self.tab.input_run.clicked.connect(self.run)
         self.process.readyReadStandardOutput.connect(self.report)
@@ -28,12 +32,12 @@ class GAUDInspectProgressController(object):
 
     def run(self, path=None):
         if path is None:
-            path = self.tab.input_fld.text()
+            path = self.tab.input_fld.currentText()
         else:
-            self.tab.input_fld.setText(path)
+            self.tab.input_fld.setEditText(path)
 
-        chimera = self.parent.app.settings.value("paths/chimera")
-        gaudi = self.parent.app.settings.value(
+        chimera = self.parent().app.settings.value("paths/chimera")
+        gaudi = self.parent().app.settings.value(
             "paths/gaudi") + '/launch.py'
         args = ['--debug', '--nogui', '--silent', '--script',
                 "{} {}".format(gaudi, path)]
@@ -44,7 +48,9 @@ class GAUDInspectProgressController(object):
         path, f = QtGui.QFileDialog.getOpenFileName(
             self.view, 'Open GAUDI Input', os.getcwd(), 'GAUDI Input (*.in.gaudi)')
         if path:
-            self.tab.input_fld.setText(path)
+            self.tab.input_fld.setEditText(path)
+            self.parent()._open_file(path)
+            self.set_current()
 
     def report(self):
         # Raw output
@@ -60,7 +66,7 @@ class GAUDInspectProgressController(object):
         except (IndexError, ValueError):
             # IndexError means that line is empty
             # ValueError indicates it's not a number
-            return None, None, None
+            return [None] * 3
         else:
             gen, evals, avg, min_, max_ = line.strip().split('\t')
             gen, evals = [int(x.strip()) for x in (gen, evals)]
@@ -86,7 +92,7 @@ class GAUDInspectProgressController(object):
     # Slots
     def process_started(self):
         # After GAUDI started
-        path = self.tab.input_fld.text()
+        path = self.tab.input_fld.currentText()
         with open(path) as f:
             self.inputfile = yaml.load(f)
         self.tab.progressbar.reset()
@@ -103,12 +109,13 @@ class GAUDInspectProgressController(object):
              for obj in self.inputfile['objectives']]
         self.tab.table.setHorizontalHeaderLabels(headers)
 
+        self.tab.input_fld.addItem(path)
+        self._save_recent_files()
+
         self.tab.textbox.clear()
-        self.view.tabber.setCurrentIndex(1)
-        self.parent.newjob.tab.bottom_run.setEnabled(False)
+        self.parent().newjob.tab.bottom_run.setEnabled(False)
         self.tab.input_run.setEnabled(False)
-        for i in [0, 2, 3]:
-            self.view.tabber.setTabEnabled(i, False)
+        self.set_active()
 
         self.view.stats.chart.configure_plot(
             self.inputfile['ga']['gens'],
@@ -119,17 +126,36 @@ class GAUDInspectProgressController(object):
         self.tab.textbox.append('Running new job')
 
     def process_finished(self, exitCode, *args, **kwargs):
-        self.parent.newjob.tab.bottom_run.setEnabled(True)
+        self.parent().newjob.tab.bottom_run.setEnabled(True)
         self.tab.input_run.setEnabled(True)
-        for i in [0, 2, 3]:
-            self.view.tabber.setTabEnabled(i, True)
+        self.restore_enabled()
+
         self.view.status('Job Finished!')
         self.tab.textbox.append('Job Finished!')
         self.tab.progressbar.hide()
 
         # Load results
-        basedir = os.path.dirname(self.tab.input_fld.text())
+        basedir = os.path.dirname(self.tab.input_fld.currentText())
         outputdir = self.inputfile['general']['outputpath']
         name = self.inputfile['general']['name'] + '.out.gaudi'
         path = os.path.normpath(os.path.join(basedir, outputdir, name))
-        self.parent._open_file(path)
+        self.parent()._open_file(path)
+
+    # Private methods
+    def _load_recent_files(self):
+        settings = QtCore.QSettings()
+        size = settings.beginReadArray("recent_files")
+        for i in range(size):
+            settings.setArrayIndex(i)
+            self.tab.input_fld.addItem(settings.value("input"))
+        settings.endArray()
+        self.tab.input_fld.setCurrentIndex(-1)
+
+    def _save_recent_files(self):
+        settings = QtCore.QSettings()
+        settings.beginWriteArray("recent_files")
+        for i in range(self.tab.input_fld.count()):
+            settings.setArrayIndex(i)
+            path = self.tab.input_fld.itemText(i)
+            settings.setValue("input", path)
+        settings.endArray()

@@ -9,11 +9,12 @@ from copy import deepcopy
 
 from PySide import QtGui, QtCore
 
+from .base import GAUDInspectBaseChildController
 from ..view.dialogs.extension import GAUDInspectConfigureExtension
 from ..configuration import ADVANCED_OPTIONS_DEFAULT
 
 
-class GAUDInspectNewJobController(QtCore.QObject):
+class GAUDInspectNewJobController(GAUDInspectBaseChildController):
 
     FIELDS = {
         'general_generations_field': ('ga', 'gens'),
@@ -24,16 +25,15 @@ class GAUDInspectNewJobController(QtCore.QObject):
 
     file_ready = QtCore.Signal(str)
 
-    def __init__(self, parent, view, model=None):
-        super(GAUDInspectNewJobController, self).__init__()
-        self.parent = parent
-        self.model = model
-        self.view = view
-        self.tab = self.view.tabber.tabs[0]
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.tabindex = 0
+        self.tab = self.view.tabber.tabs[self.tabindex]
+
         self.signals()
         self.advanced_options = deepcopy(ADVANCED_OPTIONS_DEFAULT)
-        if model:
-            self.set_model(model)
+        if self.model:
+            self.set_model(self.model)
         self.tab.advanced_dialog.fill_table(self.advanced_options)
         self.MODIFIED = False
         self.SAVE_PATH = None
@@ -41,7 +41,7 @@ class GAUDInspectNewJobController(QtCore.QObject):
     def set_model(self, model):
         self.model = model
         self.load_data()
-        self.view.tabber.setCurrentIndex(0)
+        self.set_current()
 
     def export(self):
         path, format = QtGui.QFileDialog.getSaveFileName(
@@ -136,8 +136,8 @@ class GAUDInspectNewJobController(QtCore.QObject):
             self.MODIFIED = False
 
     def _create_item(self, d=None, meta={}):
-        gaudipath = self.parent.app.settings.value(
-            "general/gaudipath") + '/gaudi'
+        gaudipath = self.parent().app.settings.value(
+            "paths/gaudi") + '/gaudi'
 
         if 'module' in meta:
             gaudi, type_, module = meta['module'].split('.')

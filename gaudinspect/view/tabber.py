@@ -13,7 +13,6 @@ class GAUDInspectViewTabber(QtGui.QTabWidget):
 
     def __init__(self):
         super(GAUDInspectViewTabber, self).__init__()
-        # self.parent = parent
         self.initUI()
 
     def initUI(self):
