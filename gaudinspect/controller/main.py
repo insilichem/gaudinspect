@@ -37,8 +37,8 @@ class GAUDInspectController(QtCore.QObject):
         configured = self.app.settings.value("flags/configured")
         if not configured:
             settings = QtCore.QSettings()
-            for k, v in configuration.default.items():
-                settings.setValue(k, v)
+            for key, val in configuration.default.items():
+                settings.setValue(key, val)
 
     def check_firstrun(self):
         configured = self.app.settings.value("flags/configured")
@@ -49,7 +49,6 @@ class GAUDInspectController(QtCore.QObject):
 
     # Global signals and signals between controllers
     def signals(self):
-
         # Viewer visibility
         self.view.tabber.currentChanged.connect(self._viewer_visibility)
 

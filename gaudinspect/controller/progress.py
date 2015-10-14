@@ -134,7 +134,7 @@ class GAUDInspectProgressController(GAUDInspectBaseChildController):
         self.view.status('Running new job')
         self.tab.textbox.append('Running new job')
 
-    def process_finished(self, exitCode, *args, **kwargs):
+    def process_finished(self, exit_code, *args, **kwargs):
         self.parent().newjob.tab.bottom_run.setEnabled(True)
         self.tab.input_run.setEnabled(True)
         self.restore_enabled()

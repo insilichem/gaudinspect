@@ -40,7 +40,10 @@ class GAUDInspectMenuController(GAUDInspectBaseChildController):
     # Private methods
     def _open_file(self):
         dialog = QFileDialog(self.view, "Open GAUDI file", os.getcwd(),
-                             "GAUDI files (*.gaudi);; GAUDI output (*.out.gaudi);; GAUDI input (*.in.gaudi)")
+                             "GAUDI files (*.gaudi);; "
+                             "GAUDI output (*.out.gaudi);; "
+                             "GAUDI input (*.in.gaudi);; "
+                             "All files (*)")
         dialog.setFileMode(QFileDialog.ExistingFile)
         return dialog
 
