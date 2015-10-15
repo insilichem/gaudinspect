@@ -9,6 +9,8 @@ from PySide.QtGui import QSortFilterProxyModel, QStandardItemModel, QStandardIte
 
 class GAUDInspectModelRecentFiles(QStandardItemModel):
 
+    KEY = "_recent_files"
+
     def __init__(self):
         super().__init__(0, 1)
         self.settings = QSettings()
@@ -67,11 +69,11 @@ class GAUDInspectModelRecentFiles(QStandardItemModel):
 
     # Data model
     def clear_recent_files(self):
-        self.settings.remove("recent_files")
+        self.settings.remove(self.KEY)
 
     def read_recent_files(self):
         files_and_timestamps = []
-        size = self.settings.beginReadArray("recent_files")
+        size = self.settings.beginReadArray(self.KEY)
         if size:
             for i in range(size):
                 self.settings.setArrayIndex(i)
@@ -85,7 +87,7 @@ class GAUDInspectModelRecentFiles(QStandardItemModel):
         if files_and_timestamps is None:
             files_and_timestamps = self.all_items()
         self.clear_recent_files()
-        self.settings.beginWriteArray("recent_files")
+        self.settings.beginWriteArray(self.KEY)
         for i, (path, timestamp) in enumerate(files_and_timestamps[:50]):
             self.settings.setArrayIndex(i)
             self.settings.setValue("path", path)
