@@ -7,6 +7,7 @@ from functools import partial
 from PySide.QtGui import QFileDialog, QAction
 from .base import GAUDInspectBaseChildController
 from ..view.dialogs.configure import GAUDInspectConfiguration
+from ..view.dialogs.about import GAUDInspectAboutDialog
 
 
 class GAUDInspectMenuController(GAUDInspectBaseChildController):
@@ -24,6 +25,7 @@ class GAUDInspectMenuController(GAUDInspectBaseChildController):
         self.populate_open_recent()
 
     def signals(self):
+        # Menu item triggers
         self.menu.file.open.triggered.connect(self.open_file_dialog.exec_)
         self.menu.file.exit.triggered.connect(self.parent().app.exit)
 
@@ -35,11 +37,15 @@ class GAUDInspectMenuController(GAUDInspectBaseChildController):
         self.menu.viewer.disable_fx.triggered.connect(
             self.parent().view.viewer.disable_effects)
 
-        self.recent.dataChanged.connect(self.populate_open_recent)
+        self.menu.help.about.triggered.connect(self.about_dialog.exec_)
+
+        # Open recent behaviour
+        self.recent.myDataChanged.connect(self.populate_open_recent)
 
     def slots(self):
         self.open_file_dialog = self._open_file_dialog()
         self.configure_dialog = self._configure
+        self.about_dialog = GAUDInspectAboutDialog()
 
     # Private methods
     def _open_file_dialog(self):
@@ -70,21 +76,13 @@ class GAUDInspectMenuController(GAUDInspectBaseChildController):
             # Clear All action
             self.menu.file.open_recent.clear_all = QAction(
                 'Clear all', self.menu.file.open_recent)
-            self.menu.file.open_recent.clear_all.triggered.connect(self._clear_recent_all)
+            self.menu.file.open_recent.clear_all.triggered.connect(self.recent.clear_all)
             self.menu.file.open_recent.addAction(self.menu.file.open_recent.clear_all)
             # Clear Deleted action
             self.menu.file.open_recent.clear_deleted = QAction(
                 'Clear deleted', self.menu.file.open_recent)
-            self.menu.file.open_recent.clear_deleted.triggered.connect(self._clear_recent_deleted)
+            self.menu.file.open_recent.clear_deleted.triggered.connect(self.recent.clear_deleted)
             self.menu.file.open_recent.addAction(self.menu.file.open_recent.clear_deleted)
-
-    def _clear_recent_all(self):
-        self.recent.clear_all()
-        self.menu.file.open_recent.clear()
-
-    def _clear_recent_deleted(self):
-        self.recent.clear_deleted()
-        self.populate_open_recent()
 
     @staticmethod
     def _trim(s, maxlength=50, start=10):

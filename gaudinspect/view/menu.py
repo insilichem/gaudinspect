@@ -110,8 +110,7 @@ class GAUDInspectViewMenu(object):
             self.controls.forward,
             self.controls.live_stats,
             self.help.help,
-            self.help.website,
-            self.help.about
+            self.help.website
         ]
         for item in items:
             item.setEnabled(False)

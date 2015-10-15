@@ -3,13 +3,14 @@
 
 from os.path import isfile
 import time
-from PySide.QtCore import QSettings, Qt
+from PySide.QtCore import QSettings, Qt, Signal
 from PySide.QtGui import QSortFilterProxyModel, QStandardItemModel, QStandardItem
 
 
 class GAUDInspectModelRecentFiles(QStandardItemModel):
 
     KEY = "_recent_files"
+    myDataChanged = Signal()
 
     def __init__(self):
         super().__init__(0, 1)
@@ -34,17 +35,21 @@ class GAUDInspectModelRecentFiles(QStandardItemModel):
             self.delete_duplicates(path)
         if sync:
             self.model_to_recent()
-            self.dataChanged.emit(item.index(), item.index())
+            self.myDataChanged.emit()
 
     def clear_all(self):
         self.clear()
         self.clear_recent_files()
+        self.myDataChanged.emit()
 
     def clear_deleted(self):
         files = [i for i in self.all_items() if isfile(i[0])]
         if files:
             self.write_recent_files(files)
             self.recent_to_model()
+            self.myDataChanged.emit()
+        else:
+            self.clear_all()
 
     # Helpers
     def all_items(self):
