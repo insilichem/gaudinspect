@@ -45,7 +45,7 @@ class GAUDInspectMenuController(GAUDInspectBaseChildController):
     def slots(self):
         self.open_file_dialog = self._open_file_dialog()
         self.configure_dialog = self._configure
-        self.about_dialog = GAUDInspectAboutDialog()
+        self.about_dialog = GAUDInspectAboutDialog(self.view)
 
     # Private methods
     def _open_file_dialog(self):

@@ -3,11 +3,12 @@
 
 from PySide import QtGui
 from ...version import __version__, __author__, __copyright__
+from ..resources import images
 
 aboutmsg = """
 <h1>GAUDInspect</h1>
 <i>A GUI for GAUDIasm</i><br />
-<p>
+<p width="250">
     Version: {}<br />
     Authors: {}<br />
     Copyright: {}
@@ -27,16 +28,19 @@ class GAUDInspectAboutDialog(QtGui.QDialog):
         self.layout = QtGui.QGridLayout(self.canvas)
 
         self.logo = QtGui.QLabel(self)
-        self.logo.setPixmap(QtGui.QPixmap("icon.png"))
-
+        self.logo.setPixmap(QtGui.QPixmap(":/logo.png"))
         self.layout.addWidget(self.logo, 0, 0)
 
         self.aboutmsg = QtGui.QLabel(aboutmsg)
+        self.aboutmsg.setWordWrap(True)
+        self.aboutmsg.setMaximumWidth(250)
+        self.layout.addWidget(self.aboutmsg, 0, 1)
+        # The logo has some margins. Add some to the text too
         margins = self.aboutmsg.contentsMargins()
         margins.setRight(margins.right() + 10)
         self.aboutmsg.setContentsMargins(margins)
-        self.layout.addWidget(self.aboutmsg, 0, 1)
 
     def showEvent(self, event):
         super().showEvent(event)
         self.adjustSize()
+        self.setFixedSize(self.size())

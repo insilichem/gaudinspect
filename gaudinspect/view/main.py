@@ -3,6 +3,7 @@
 
 from PySide import QtGui, QtCore, QtOpenGL
 from . import viewer, menu, tabber, stats
+from .resources import images
 
 
 class GAUDInspectView(QtGui.QMainWindow):
@@ -12,7 +13,7 @@ class GAUDInspectView(QtGui.QMainWindow):
     def __init__(self, app=None):
         super(GAUDInspectView, self).__init__()
         self.app = app
-        self.setWindowIcon(QtGui.QIcon('icon.png'))
+        self.setWindowIcon(QtGui.QIcon(':/logo.png'))
         self.glcontext = QtOpenGL.QGLContext(QtOpenGL.QGLFormat())
         self.setAcceptDrops(True)
 
