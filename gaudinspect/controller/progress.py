@@ -11,20 +11,22 @@ from .base import GAUDInspectBaseChildController
 
 class GAUDInspectProgressController(GAUDInspectBaseChildController):
 
-    def __init__(self, **kwargs):
+    def __init__(self, recent_model=None, **kwargs):
         super().__init__(**kwargs)
         self.tabindex = 1
         self.tab = self.view.tabber.tabs[self.tabindex]
-
+        self.recent = recent_model
+        if self.recent:
+            self.tab.input_fld.setModel(self.recent)
+            self.tab.input_fld.setCurrentIndex(-1)
         self.process = QtCore.QProcess(self.view)
         self.history = []
         self.inputfile = {}
-        self._load_recent_files()
         self.signals()
 
     def signals(self):
         self.parent().newjob.file_ready.connect(self.run)
-        self.tab.input_fld.currentIndexChanged.connect(
+        self.tab.input_fld.activated.connect(
             self.open_file_from_dropdown)
         self.tab.input_btn.clicked.connect(self.open_file)
         self.tab.input_run.clicked.connect(self.run)
@@ -86,7 +88,8 @@ class GAUDInspectProgressController(GAUDInspectBaseChildController):
     # Slots
     def open_file(self):
         path, f = QtGui.QFileDialog.getOpenFileName(
-            self.view, 'Open GAUDI Input', os.getcwd(), 'GAUDI Input (*.in.gaudi)')
+            self.view, 'Open GAUDI Input',
+            os.getcwd(), 'GAUDI Input (*.in.gaudi)')
         self.post_open_file(path)
 
     def open_file_from_dropdown(self, index):
@@ -96,7 +99,7 @@ class GAUDInspectProgressController(GAUDInspectBaseChildController):
 
     def post_open_file(self, path):
         if path:
-            self.parent()._open_file(path)
+            self.parent().open_file(path)
             self.set_current()
 
     def process_started(self):
@@ -117,9 +120,6 @@ class GAUDInspectProgressController(GAUDInspectBaseChildController):
             ["{}{}".format('+-'[obj['weight'] < 0], obj['name'])
              for obj in self.inputfile['objectives']]
         self.tab.table.setHorizontalHeaderLabels(headers)
-
-        self.tab.input_fld.addItem(path)
-        self._save_recent_files()
 
         self.tab.textbox.clear()
         self.parent().newjob.tab.bottom_run.setEnabled(False)
@@ -148,23 +148,4 @@ class GAUDInspectProgressController(GAUDInspectBaseChildController):
         outputdir = self.inputfile['general']['outputpath']
         name = self.inputfile['general']['name'] + '.out.gaudi'
         path = os.path.normpath(os.path.join(basedir, outputdir, name))
-        self.parent()._open_file(path)
-
-    # Private methods
-    def _load_recent_files(self):
-        settings = QtCore.QSettings()
-        size = settings.beginReadArray("recent_files")
-        for i in range(size):
-            settings.setArrayIndex(i)
-            self.tab.input_fld.addItem(settings.value("input"))
-        settings.endArray()
-        self.tab.input_fld.setCurrentIndex(-1)
-
-    def _save_recent_files(self):
-        settings = QtCore.QSettings()
-        settings.beginWriteArray("recent_files")
-        for i in range(self.tab.input_fld.count()):
-            settings.setArrayIndex(i)
-            path = self.tab.input_fld.itemText(i)
-            settings.setValue("input", path)
-        settings.endArray()
+        self.parent().open_file(path)
