@@ -24,8 +24,7 @@ class GAUDInspectAboutDialog(QtGui.QDialog):
         self.initUI()
 
     def initUI(self):
-        self.canvas = QtGui.QWidget(self)
-        self.layout = QtGui.QGridLayout(self.canvas)
+        self.layout = QtGui.QGridLayout(self)
 
         self.logo = QtGui.QLabel(self)
         self.logo.setPixmap(QtGui.QPixmap(":/logo.png"))

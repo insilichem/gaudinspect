@@ -76,6 +76,8 @@ class GAUDInspectViewMenu(object):
             'Forward one generation', self.controls)
         self.controls.addAction(self.controls.forward)
         self.controls.addSeparator()
+        self.controls.queue = QAction('Job queue', self.controls)
+        self.controls.addAction(self.controls.queue)
         self.controls.live_stats = QAction('Show live stats', self.controls)
         self.controls.addAction(self.controls.live_stats)
 

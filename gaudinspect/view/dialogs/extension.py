@@ -8,14 +8,13 @@ import yaml
 class GAUDInspectConfigureExtension(QtGui.QDialog):
 
     def __init__(self, parent=None):
-        super(GAUDInspectConfigureExtension, self).__init__(parent=parent)
+        super().__init__(parent=parent)
         self.setWindowTitle("Configure extension - GAUDInspect")
         self.setModal(True)
         self.initUI()
 
     def initUI(self):
-        self.canvas = QtGui.QWidget(self)
-        self.layout = QtGui.QVBoxLayout(self.canvas)
+        self.layout = QtGui.QVBoxLayout(self)
 
         self.general_group = QtGui.QGroupBox('General')
         self.general_layout = QtGui.QGridLayout(self.general_group)
@@ -34,18 +33,13 @@ class GAUDInspectConfigureExtension(QtGui.QDialog):
         self.params_group = QtGui.QGroupBox('Parameters')
         self.params_layout = QtGui.QVBoxLayout(self.params_group)
         self.layout.addWidget(self.params_group)
-        self.table = QtGui.QTableWidget(self.params_group)
+        self.table = QtGui.QTableWidget(0, 2)
         self.params_layout.addWidget(self.table)
-        self.table.setColumnCount(2)
         self.table.setHorizontalHeaderLabels(['Parameter', 'Value'])
-        self.table.setSizePolicy(QtGui.QSizePolicy.Preferred,
-                                 QtGui.QSizePolicy.Expanding)
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.verticalHeader().setVisible(False)
-        self.table.setFixedWidth(280)
         self.table.setStyleSheet("QToolTip { width: 150px}")
         self.table.setSelectionMode(self.table.NoSelection)
-
         self.buttons = QtGui.QDialogButtonBox(
             QtGui.QDialogButtonBox.Ok | QtGui.QDialogButtonBox.RestoreDefaults | QtGui.QDialogButtonBox.Cancel,
             QtCore.Qt.Horizontal, self)

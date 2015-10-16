@@ -5,7 +5,9 @@ from .results import GAUDInspectResultsController
 from .newjob import GAUDInspectNewJobController
 from .menu import GAUDInspectMenuController
 from .progress import GAUDInspectProgressController
+from .queue import GAUDInspectQueueController
 from ..model.main import GAUDInspectModel
+
 from .. import configuration
 
 from PySide import QtGui, QtCore
@@ -30,6 +32,7 @@ class GAUDInspectController(QtCore.QObject):
                                                       recent_model=self.model.recent.input_only)
         self.details = None
         self.results = GAUDInspectResultsController(parent=self, view=view)
+        self.queue = GAUDInspectQueueController(parent=self, view=view)
         # Start things up
         self._settings()
         self._signals()

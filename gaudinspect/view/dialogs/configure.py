@@ -11,7 +11,7 @@ from ... import configuration
 class GAUDInspectConfiguration(QtGui.QDialog):
 
     def __init__(self, parent=None):
-        super(GAUDInspectConfiguration, self).__init__(parent=parent)
+        super().__init__(parent=parent)
         self.setWindowTitle("Edit configuration - GAUDInspect")
         self.setModal(True)
         self.settings = QtCore.QSettings()
@@ -19,12 +19,11 @@ class GAUDInspectConfiguration(QtGui.QDialog):
         self.load_settings()
 
     def showEvent(self, event):
-        super(GAUDInspectConfiguration, self).showEvent(event)
+        super().showEvent(event)
         self.adjustSize()
 
     def initUI(self):
-        self.canvas = QtGui.QWidget(self)
-        self.layout = QtGui.QVBoxLayout(self.canvas)
+        self.layout = QtGui.QVBoxLayout(self)
 
         self.tabber = QtGui.QTabWidget(self)
         self.layout.addWidget(self.tabber)
@@ -40,9 +39,9 @@ class GAUDInspectConfiguration(QtGui.QDialog):
             self.tab_general_group)
         # Fields
         self.paths_gaudi = self.browse_field(
-            'GAUDI', self.tab_general_group_layout)
+            self, 'GAUDI', self.tab_general_group_layout)
         self.paths_chimera = self.browse_field(
-            'Chimera', self.tab_general_group_layout)
+            self, 'Chimera', self.tab_general_group_layout)
 
         # TAB 2 - Viewer Settings
         self.tab_viewer = QtGui.QWidget(self)
@@ -83,8 +82,20 @@ class GAUDInspectConfiguration(QtGui.QDialog):
 
         return w
 
-    def browse_field(self, label, layout):
-        w = QtGui.QWidget(self)
+    @staticmethod
+    def browse_field(parent, label, layout):
+        """
+        A helper method to create browse fields
+        """
+        def get_path(w):
+            title = w.lbl.text()
+            path, f = QtGui.QFileDialog.getOpenFileName(
+                parent, 'Locate the path to {}'.format(title),
+                os.getcwd(), "All files (*)")
+            if path:
+                w.fld.setText(path)
+
+        w = QtGui.QWidget(parent)
         wlayout = QtGui.QHBoxLayout(w)
         wlayout.setContentsMargins(0, 0, 0, 0)
 
@@ -94,21 +105,13 @@ class GAUDInspectConfiguration(QtGui.QDialog):
         w.fld.setMinimumWidth(300)
         w.btn = QtGui.QPushButton('...')
         w.btn.setFixedWidth(25)
-        w.btn.clicked.connect(lambda: self.get_path(w))
+        w.btn.clicked.connect(lambda: get_path(w))
 
         for x in (w.lbl, w.fld, w.btn):
             wlayout.addWidget(x)
         layout.addWidget(w)
 
         return w
-
-    def get_path(self, w):
-        title = w.lbl.text()
-        path, f = QtGui.QFileDialog.getOpenFileName(
-            self, 'Locate the path to {}'.format(title),
-            os.getcwd(), "All files (*)")
-        if path:
-            w.fld.setText(path)
 
     def load_settings(self):
 

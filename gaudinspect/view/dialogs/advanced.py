@@ -15,14 +15,10 @@ class GAUDInspectAdvancedOptionsDialog(QtGui.QDialog):
         self.initUI()
 
     def initUI(self):
-        self.canvas = QtGui.QWidget(self)
-        self.layout = QtGui.QVBoxLayout(self.canvas)
-        self.canvas.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                  QtGui.QSizePolicy.Expanding)
+        self.layout = QtGui.QVBoxLayout(self)
 
         # Table for parameters
-        self.table = QtGui.QTableWidget(self)
-        self.table.setColumnCount(2)
+        self.table = QtGui.QTableWidget(0, 2)
         self.layout.addWidget(self.table)
 
         # Buttons
@@ -35,8 +31,6 @@ class GAUDInspectAdvancedOptionsDialog(QtGui.QDialog):
 
     def fill_table(self, model):
         self.table.clear()
-        self.table.setRowCount(0)
-        self.table.setHorizontalHeaderLabels(['Parameter', 'Value'])
         flags = QtCore.Qt.ItemFlags()
         flags != QtCore.Qt.ItemIsEditable
         black = QtGui.QBrush(QtGui.QColor(0, 0, 0))
@@ -51,16 +45,14 @@ class GAUDInspectAdvancedOptionsDialog(QtGui.QDialog):
 
         self.table.resizeColumnsToContents()
         self.table.resizeRowsToContents()
-        self.table.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                 QtGui.QSizePolicy.Expanding)
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.verticalHeader().setVisible(False)
         self.table.setStyleSheet("QToolTip { width: 150px}")
         self.table.setSelectionMode(self.table.NoSelection)
+        self.table.setHorizontalHeaderLabels(['Parameter', 'Value'])
 
     def showEvent(self, event):
         super(GAUDInspectAdvancedOptionsDialog, self).showEvent(event)
         bw, bh = self.buttons.size().toTuple()
-        self.table.setFixedWidth(bw)
         tw, th = self.table.size().toTuple()
         self.resize(bw + 24, bh + th + 24)

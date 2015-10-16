@@ -19,7 +19,7 @@ class GAUDInspectProgressController(GAUDInspectBaseChildController):
         if self.recent:
             self.tab.input_fld.setModel(self.recent)
             self.tab.input_fld.setCurrentIndex(-1)
-        self.process = QtCore.QProcess(self.view)
+        self.process = None
         self.history = []
         self.inputfile = {}
         self.signals()
@@ -30,6 +30,8 @@ class GAUDInspectProgressController(GAUDInspectBaseChildController):
             self.open_file_from_dropdown)
         self.tab.input_btn.clicked.connect(self.open_file)
         self.tab.input_run.clicked.connect(self.run)
+
+    def connect_process_signals(self):
         self.process.readyReadStandardOutput.connect(self.report)
         self.process.started.connect(self.process_started)
         self.process.finished.connect(self.process_finished)
@@ -40,13 +42,17 @@ class GAUDInspectProgressController(GAUDInspectBaseChildController):
         else:
             self.tab.input_fld.setEditText(path)
 
-        chimera = self.parent().app.settings.value("paths/chimera")
-        gaudi = self.parent().app.settings.value(
-            "paths/gaudi") + '/launch.py'
+        settings = QtCore.QSettings()
+        chimera = settings.value("paths/chimera")
+        gaudi = os.path.join(settings.value("paths/gaudi"), "launch.py")
         args = ['--debug', '--nogui', '--silent', '--script',
                 "{} {}".format(gaudi, path)]
 
+        self.process = QtCore.QProcess(self.view)
+        self.connect_process_signals()
         self.process.start(chimera, args)
+
+        return self.process
 
     def report(self):
         # Raw output
@@ -144,8 +150,9 @@ class GAUDInspectProgressController(GAUDInspectBaseChildController):
         self.tab.progressbar.hide()
 
         # Load results
-        basedir = os.path.dirname(self.tab.input_fld.currentText())
-        outputdir = self.inputfile['general']['outputpath']
-        name = self.inputfile['general']['name'] + '.out.gaudi'
-        path = os.path.normpath(os.path.join(basedir, outputdir, name))
-        self.parent().open_file(path)
+        if not exit_code:
+            basedir = os.path.dirname(self.tab.input_fld.currentText())
+            outputdir = self.inputfile['general']['outputpath']
+            name = self.inputfile['general']['name'] + '.out.gaudi'
+            path = os.path.normpath(os.path.join(basedir, outputdir, name))
+            self.parent().open_file(path)
