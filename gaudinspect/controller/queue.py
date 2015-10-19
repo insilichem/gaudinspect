@@ -17,7 +17,7 @@ class GAUDInspectQueueController(GAUDInspectBaseChildController):
         self.dialog = self.parent().menu.queue_dialog
         self.table = self.dialog.table
         self.jobs = OrderedDict()
-        self.currenjob = None
+        self.currentjob = None
         self.signals()
 
     def signals(self):
@@ -112,7 +112,7 @@ class GAUDInspectQueueController(GAUDInspectBaseChildController):
 
 class GAUDInspectJobHelper(object):
     PENDING = 'Pending'
-    WORKING = 'Working'
+    WORKING = 'Running'
     FINISHED = 'Finished'
     FAILED = 'Failed'
     ABORTED = 'Aborted'

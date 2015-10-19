@@ -2,7 +2,6 @@
 # -*- coding: utf-8 -*-
 
 from PySide import QtGui, QtCore
-from ..dialogs.advanced import GAUDInspectAdvancedOptionsDialog
 
 
 def get():
@@ -13,9 +12,7 @@ class GAUDInspectViewNewJob(QtGui.QWidget):
 
     def __init__(self):
         super(GAUDInspectViewNewJob, self).__init__()
-        # self.parent = parent
         self.title = "New Job"
-        self.dialogs()
         self.initUI()
 
     def initUI(self):
@@ -129,6 +126,3 @@ class GAUDInspectViewNewJob(QtGui.QWidget):
         self.bottom_run = QtGui.QPushButton('Run')
         self.bottom_run.setStyleSheet('font-weight: bold;')
         self.bottom_bar.addWidget(self.bottom_run)
-
-    def dialogs(self):
-        self.advanced_dialog = GAUDInspectAdvancedOptionsDialog(self)

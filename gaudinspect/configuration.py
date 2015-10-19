@@ -1,6 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+"""
+This file holds the default parameters of the application configuration,
+and some defaults for input files.
+
+It will be expanded as necessary.
+
+"""
+
 from collections import OrderedDict
 
 default = {

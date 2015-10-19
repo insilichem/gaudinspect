@@ -12,7 +12,7 @@ from .base import GAUDInspectBaseChildController
 
 class GAUDInspectResultsController(GAUDInspectBaseChildController):
 
-    def __init__(self, renderer='ballandstick', color='default', **kwargs):
+    def __init__(self, childmodel=None, renderer='ballandstick', color='default', **kwargs):
         super().__init__(**kwargs)
         self.tabindex = 3
         self.tab = self.view.tabber.tabs[self.tabindex]
@@ -25,12 +25,12 @@ class GAUDInspectResultsController(GAUDInspectBaseChildController):
         self.selected = []
         self.unzipped = {}
 
-        if self.model:
-            self.set_model(self.model)
+        if childmodel:
+            self.set_model(childmodel)
 
     def set_model(self, model):
         # Models
-        self.model = model
+        self.childmodel = model
         self.proxy = CustomSortFilterProxyModel(self.model)
         self.proxy.setSourceModel(self.model)
         self.table.setModel(self.proxy)
@@ -52,10 +52,10 @@ class GAUDInspectResultsController(GAUDInspectBaseChildController):
 
     # Slots
     def clear(self):
-        if not self.model:
+        if not self.childmodel:
             return
         # Remove the model and filters
-        self.model.clear()
+        self.childmodel.clear()
         self.model = None
         self.proxy.invalidate()
         self.filters.filter_clear.click()
@@ -107,7 +107,7 @@ class GAUDInspectResultsController(GAUDInspectBaseChildController):
             try:
                 mol2, meta = self.unzipped[item]
             except KeyError:
-                mol2, meta = self.unzipped[item] = self.model.parse_zip(item)
+                mol2, meta = self.unzipped[item] = self.childmodel.parse_zip(item)
             for m, color in zip(mol2, cycle(self.colors)):
                 mols.append(m)
                 self.view.viewer.add_molecule(
@@ -146,7 +146,7 @@ class CustomSortFilterProxyModel(QtGui.QSortFilterProxyModel):
     """ A proxy model to fix numerical sorting """
 
     def __init__(self, parent=None):
-        super(CustomSortFilterProxyModel, self).__init__(parent)
+        super().__init__(parent)
         self.functions = {
             '>': operator.gt,
             '>=': operator.ge,

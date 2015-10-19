@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 from PySide import QtGui
+from PySide.QtCore import Qt
 from ...version import __version__, __author__, __copyright__
 from ..resources import images
 
@@ -21,6 +22,7 @@ class GAUDInspectAboutDialog(QtGui.QDialog):
     def __init__(self, parent=None, *args, **kwargs):
         super().__init__(parent=parent)
         self.setWindowTitle("About GAUDInspect")
+        self.setAttribute(Qt.WA_DeleteOnClose)
         self.initUI()
 
     def initUI(self):

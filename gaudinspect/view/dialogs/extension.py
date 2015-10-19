@@ -48,7 +48,7 @@ class GAUDInspectConfigureExtension(QtGui.QDialog):
         self.layout.addWidget(self.buttons)
 
     def showEvent(self, event):
-        super(GAUDInspectConfigureExtension, self).showEvent(event)
+        super().showEvent(event)
         w, h = self.table.size().toTuple()
         w2, h2 = self.general_group.size().toTuple()
         w3, h3 = self.buttons.size().toTuple()
@@ -100,6 +100,8 @@ class GAUDInspectConfigureExtension(QtGui.QDialog):
             module = definitions.get('module', '')
         dialog = GAUDInspectConfigureExtension(parent=parent)
         dialog.load_data(name=name, module=module, params=definitions)
+        accepted = dialog.Accepted
         result = dialog.exec_()
         params = dialog.dump()
-        return params, result == dialog.Accepted
+        dialog.deleteLater()
+        return params, result == accepted

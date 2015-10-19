@@ -1,6 +1,13 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+"""
+The main launcher of the GUI app. It does nothing fancy, except
+loading the settings for all the application and calling the
+main controller, model and view.
+
+"""
+
 import sys
 from PySide.QtGui import QApplication
 from PySide.QtCore import QSettings, QCoreApplication

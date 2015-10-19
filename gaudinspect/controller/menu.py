@@ -5,6 +5,7 @@ import os
 from functools import partial
 
 from PySide.QtGui import QFileDialog, QAction
+from PySide.QtCore import Qt
 from .base import GAUDInspectBaseChildController
 from ..view.dialogs.configure import GAUDInspectConfiguration
 from ..view.dialogs.about import GAUDInspectAboutDialog
@@ -28,26 +29,26 @@ class GAUDInspectMenuController(GAUDInspectBaseChildController):
     def signals(self):
         # Menu item triggers
         self.menu.file.open.triggered.connect(self.open_file_dialog.exec_)
-        self.menu.file.exit.triggered.connect(self.parent().app.exit)
+        self.menu.file.exit.triggered.connect(self.app.exit)
 
         self.menu.edit.configuration.triggered.connect(
-            self.configure_dialog)
+            GAUDInspectConfiguration.process)
 
         self.menu.viewer.enable_fx.triggered.connect(
-            self.parent().view.viewer.enable_effects)
+            self.view.viewer.enable_effects)
         self.menu.viewer.disable_fx.triggered.connect(
-            self.parent().view.viewer.disable_effects)
+            self.view.viewer.disable_effects)
 
         self.menu.controls.queue.triggered.connect(self.queue_dialog.show)
-        self.menu.help.about.triggered.connect(self.about_dialog.exec_)
+        self.menu.help.about.triggered.connect(self.about_dialog().exec_)
 
         # Open recent behaviour
         self.recent.myDataChanged.connect(self.populate_open_recent)
 
     def slots(self):
+        self.configure_dialog = partial(GAUDInspectConfiguration.process, self.view)
         self.open_file_dialog = self._open_file_dialog()
-        self.configure_dialog = self._configure
-        self.about_dialog = GAUDInspectAboutDialog(self.view)
+        self.about_dialog = partial(GAUDInspectAboutDialog, self.view)
         self.queue_dialog = GAUDInspectQueueDialog(self.view)
 
     # Private methods
@@ -59,12 +60,6 @@ class GAUDInspectMenuController(GAUDInspectBaseChildController):
                              "All files (*)")
         dialog.setFileMode(QFileDialog.ExistingFile)
         return dialog
-
-    def _configure(self):
-        dialog = GAUDInspectConfiguration(self.view)
-        returned = dialog.exec_()
-        if returned == dialog.Accepted:
-            dialog.save_settings()
 
     def populate_open_recent(self, *args):
         self.menu.file.open_recent.clear()

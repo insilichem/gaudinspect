@@ -6,11 +6,13 @@ import random
 import string
 import yaml
 from copy import deepcopy
+from functools import partial
 
 from PySide import QtGui, QtCore
 
 from .base import GAUDInspectBaseChildController
 from ..view.dialogs.extension import GAUDInspectConfigureExtension
+from ..view.dialogs.advanced import GAUDInspectAdvancedOptionsDialog
 from ..configuration import ADVANCED_OPTIONS_DEFAULT
 
 
@@ -25,21 +27,20 @@ class GAUDInspectNewJobController(GAUDInspectBaseChildController):
 
     file_ready = QtCore.Signal(str)
 
-    def __init__(self, **kwargs):
+    def __init__(self, childmodel=None, **kwargs):
         super().__init__(**kwargs)
         self.tabindex = 0
         self.tab = self.view.tabber.tabs[self.tabindex]
-
-        self.signals()
         self.advanced_options = deepcopy(ADVANCED_OPTIONS_DEFAULT)
-        if self.model:
-            self.set_model(self.model)
-        self.tab.advanced_dialog.fill_table(self.advanced_options)
         self.MODIFIED = False
         self.SAVE_PATH = None
 
+        self.signals()
+        if childmodel:
+            self.set_model(childmodel)
+
     def set_model(self, model):
-        self.model = model
+        self.childmodel = model
         self.load_data()
         self.set_current()
 
@@ -49,8 +50,9 @@ class GAUDInspectNewJobController(GAUDInspectBaseChildController):
             os.getcwd(), "GAUDI Input (*.in.gaudi)")
         if path:
             self.dump()
-            self.model.export(path)
+            self.childmodel.export(path)
             self.SAVE_PATH = path
+            self.view.status("File saved at {}.".format(path))
             return path
 
     # Signals
@@ -66,72 +68,75 @@ class GAUDInspectNewJobController(GAUDInspectBaseChildController):
         # General
         self.tab.general_project_btn.clicked.connect(self._random_name)
         self.tab.general_outputpath_browse.clicked.connect(self._choose_path)
-        self.tab.advanced_btn.clicked.connect(self.tab.advanced_dialog.exec_)
+        self.tab.advanced_btn.clicked.connect(partial(
+            GAUDInspectAdvancedOptionsDialog.process,
+            self.view, self.advanced_options))
         # Bottom buttons
         self.tab.bottom_save.clicked.connect(self.export)
         self.tab.bottom_run.clicked.connect(self._save_and_run)
 
     # Slots
     def load_data(self):
-        if self.model:
+        if self.childmodel:
             for k, (v, w) in self.FIELDS.items():
-                getattr(self.tab, k).setText(str(self.model.gaudidata[v][w]))
+                getattr(self.tab, k).setText(
+                    str(self.childmodel.gaudidata[v][w]))
 
-            for gene in self.model.gaudidata['genes']:
+            for gene in self.childmodel.gaudidata['genes']:
                 item = self._create_data_listitem(gene)
                 self.tab.genes_list.addItem(item)
 
-            for obj in self.model.gaudidata['objectives']:
+            for obj in self.childmodel.gaudidata['objectives']:
                 item = self._create_data_listitem(obj)
                 self.tab.objectives_list.addItem(item)
 
             # Replace default advanced settings
-            for k, v in self.model.gaudidata['general'].items():
+            for k, v in self.childmodel.gaudidata['general'].items():
                 self.advanced_options.get(k, [''])[0] = v
-            for k, v in self.model.gaudidata['ga'].items():
+            for k, v in self.childmodel.gaudidata['ga'].items():
                 self.advanced_options.get(k, [''])[0] = v
             self.advanced_options['similarity'][0] = \
-                self.model.gaudidata['similarity']['module']
+                self.childmodel.gaudidata['similarity']['module']
             self.advanced_options['similarity_args'][0] = \
-                self.model.gaudidata['similarity']['args']
+                self.childmodel.gaudidata['similarity']['args']
             self.advanced_options['similarity_kwargs'][0] = \
-                self.model.gaudidata['similarity']['kwargs']
+                self.childmodel.gaudidata['similarity']['kwargs']
 
-            self.SAVE_PATH = self.model.path
-        self.tab.advanced_dialog.fill_table(self.advanced_options)
+            self.SAVE_PATH = self.childmodel.path
 
     def dump(self):
-        if self.model:
+        if self.childmodel:
             for k, (v, w) in self.FIELDS.items():
-                self.model.gaudidata[v][w] = yaml.load(
+                self.childmodel.gaudidata[v][w] = yaml.load(
                     getattr(self.tab, k).text())
 
-            del self.model.gaudidata['genes'][:]
+            del self.childmodel.gaudidata['genes'][:]
             for i in range(self.tab.genes_list.count()):
                 item = self.tab.genes_list.item(i)
-                self.model.gaudidata['genes'].append(
+                self.childmodel.gaudidata['genes'].append(
                     item.data(QtCore.Qt.UserRole))
 
-            del self.model.gaudidata['objectives'][:]
+            del self.childmodel.gaudidata['objectives'][:]
             for i in range(self.tab.objectives_list.count()):
                 item = self.tab.objectives_list.item(i)
-                self.model.gaudidata['objectives'].append(
+                self.childmodel.gaudidata['objectives'].append(
                     item.data(QtCore.Qt.UserRole))
 
             # Replace default advanced settings
-            for k in self.model.gaudidata['general']:
+            for k in self.childmodel.gaudidata['general']:
                 value = self.advanced_options.get(k, [''])[0]
                 if value:
-                    self.model.gaudidata['general'][k] = yaml.load(str(value))
-            for k in self.model.gaudidata['ga']:
+                    self.childmodel.gaudidata['general'][k] = \
+                        yaml.load(str(value))
+            for k in self.childmodel.gaudidata['ga']:
                 value = self.advanced_options.get(k, [''])[0]
                 if value:
-                    self.model.gaudidata['ga'][k] = yaml.load(str(value))
-            self.model.gaudidata['similarity']['type'] = \
+                    self.childmodel.gaudidata['ga'][k] = yaml.load(str(value))
+            self.childmodel.gaudidata['similarity']['type'] = \
                 self.advanced_options['similarity'][0]
-            self.model.gaudidata['similarity']['args'] = \
+            self.childmodel.gaudidata['similarity']['args'] = \
                 self.advanced_options['similarity_args'][0]
-            self.model.gaudidata['similarity']['kwargs'] = \
+            self.childmodel.gaudidata['similarity']['kwargs'] = \
                 self.advanced_options['similarity_kwargs'][0]
 
             self.MODIFIED = False

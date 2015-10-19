@@ -12,6 +12,7 @@ class GAUDInspectConfiguration(QtGui.QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent=parent)
+
         self.setWindowTitle("Edit configuration - GAUDInspect")
         self.setModal(True)
         self.settings = QtCore.QSettings()
@@ -148,3 +149,11 @@ class GAUDInspectConfiguration(QtGui.QDialog):
                 self.settings.setValue(k, v)
             self.settings.sync()
             self.load_settings()
+
+    @staticmethod
+    def process(parent=None):
+        dialog = GAUDInspectConfiguration(parent)
+        returned = dialog.exec_()
+        if returned == dialog.Accepted:
+            dialog.save_settings()
+        dialog.deleteLater()
