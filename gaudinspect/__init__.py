@@ -11,3 +11,8 @@ and examine the results.
 """
 
 from .version import __version_info__, __version__
+from PySide.QtCore import QSettings, QCoreApplication
+
+QSettings.setDefaultFormat(QSettings.IniFormat)
+QCoreApplication.setOrganizationName("GAUDI")
+QCoreApplication.setApplicationName("GAUDInspect")

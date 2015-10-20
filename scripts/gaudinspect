@@ -10,7 +10,7 @@ main controller, model and view.
 
 import sys
 from PySide.QtGui import QApplication
-from PySide.QtCore import QSettings, QCoreApplication
+from PySide.QtCore import QSettings
 from gaudinspect.controller.main import GAUDInspectController
 from gaudinspect.model.main import GAUDInspectModel
 from gaudinspect.view.main import GAUDInspectView
@@ -22,9 +22,6 @@ def main():
     except RuntimeError:
         app = QApplication.instance()
 
-    QSettings.setDefaultFormat(QSettings.IniFormat)
-    QCoreApplication.setOrganizationName("GAUDI")
-    QCoreApplication.setApplicationName("GAUDInspect")
     app.settings = QSettings()
 
     model, view = GAUDInspectModel(app=app), GAUDInspectView(app=app)
