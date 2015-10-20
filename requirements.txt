@@ -1,24 +1,80 @@
-chemlab                   0.4.1                     <pip>
-cython                    0.23.1                   py34_0
-distribute                0.6.27                    <pip>
-matplotlib                1.4.3                np19py34_1
-mingwpy                   0.1.0                    py34_3
-nose                      1.3.4                     <pip>
-numpy                     1.9.2                    py34_0
-pillow                    2.9.0                    py34_0
-pip                       7.1.2                    py34_0
-pyopengl                  3.1.1a1              np19py34_0
-pyparsing                 2.0.3                    py34_0
-pyside                    1.2.2                     <pip>
-pyside-pyzo               1.2.2                    py34_2
-python                    3.4.3                         0
-python-dateutil           2.4.2                    py34_0
-pytz                      2015.4                   py34_0
-pyyaml                    3.11                     py34_1
-scipy                     0.16.0               np19py34_0
-setuptools                18.1                     py34_0
-six                       1.9.0                    py34_0
-wheel                     0.24.0                   py34_0
-
-## Maybe this is needed too
-sudo apt-get install build-essential git cmake libqt4-dev libphonon-dev python2.7-dev libxml2-dev libxslt1-dev qtmobility-dev
+astroid==1.3.4
+cclib==1.3
+certifi==14.05.1
+chemlab==0.4.1
+chemview==0.3
+cython==0.23.2
+decorator==4.0.2
+distribute==0.6.45
+fontconfig==2.11.1
+freeglut==2.8.1
+freetype==2.5.2
+hdf5==1.8.15.
+ipykernel==4.0.3
+ipython==4.0.0
+ipython-genutils==0.1.0
+ipython-notebook==4.0.4
+ipython_genutils==0.1.0
+jinja2==2.8
+jpeg==8d
+jsonschema==2.4.0
+jupyter-client==4.0.0
+jupyter-core==4.0.4
+jupyter_client==4.0.0
+jupyter_core==4.0.4
+libgfortran==1.0
+libpng==1.6.17
+libsodium==0.4.5
+libtiff==4.0.2
+libxml2==2.9.2
+llvmlite==0.7.0
+logilab-common==0.63.2
+markupsafe==0.23
+matplotlib==1.4.3
+mistune==0.7.1
+nbconvert==4.0.0
+nbformat==4.0.0
+nose==1.3.7
+notebook==4.0.4
+numba==0.21.0
+numexpr==2.4.3
+numpy==1.9.2
+openblas==0.2.14
+openssl==1.0.1k
+path.py==7.6
+pexpect==3.3
+pickleshare==0.5
+pillow==2.9.0
+pip==7.1.2
+ptyprocess==0.4
+pygments==2.0.2
+pylint==1.4.2
+pyopengl==3.1.1a1
+pyparsing==2.0.3
+pyqt==4.11.3
+pyside-pyzo==1.2.1
+pytables==3.2.1.1
+python==3.4.3
+python-dateutil==2.4.2
+pytz==2015.4
+pyyaml==3.11
+pyzmq==14.7.0
+qt==4.8.6
+readline==6.2
+scipy==0.16.0
+setuptools==18.4
+simplegeneric==0.8.1
+sip==4.16.5
+six==1.10.0
+sqlite==3.8.4.1
+system==5.8
+tables==3.2.1
+terminado==0.5
+tk==8.5.18
+tornado==4.2.1
+traitlets==4.0.0
+wheel==0.26.0
+xz==5.0.5
+yaml==0.1.6
+zeromq==4.0.5
+zlib==1.2.8
