@@ -31,8 +31,8 @@ class GAUDInspectResultsController(GAUDInspectBaseChildController):
     def set_model(self, model):
         # Models
         self.childmodel = model
-        self.proxy = CustomSortFilterProxyModel(self.model)
-        self.proxy.setSourceModel(self.model)
+        self.proxy = CustomSortFilterProxyModel(self.childmodel)
+        self.proxy.setSourceModel(self.childmodel)
         self.table.setModel(self.proxy)
         self.table.sortByColumn(0, Qt.AscendingOrder)
         self.connect_model_signals()
@@ -107,7 +107,8 @@ class GAUDInspectResultsController(GAUDInspectBaseChildController):
             try:
                 mol2, meta = self.unzipped[item]
             except KeyError:
-                mol2, meta = self.unzipped[item] = self.childmodel.parse_zip(item)
+                mol2, meta = self.unzipped[
+                    item] = self.childmodel.parse_zip(item)
             for m, color in zip(mol2, cycle(self.colors)):
                 mols.append(m)
                 self.view.viewer.add_molecule(

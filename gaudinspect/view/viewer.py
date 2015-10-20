@@ -124,8 +124,8 @@ class GAUDInspectViewViewer(QChemlabWidget):
                 else:
                     self.enable_effects()
 
-    def add_post_processing(self, klass, *args, **kwargs):
-        pp = klass(self, *args, **kwargs)
+    def add_post_processing(self, cls, *args, **kwargs):
+        pp = cls(self, *args, **kwargs)
         self.post_processing.append(pp)
         return pp
 
@@ -134,8 +134,7 @@ class GAUDInspectViewViewer(QChemlabWidget):
         if self.renderers:
             self.add_post_processing(
                 SSAOEffect, kernel_size=128, kernel_radius=1.0)
-            self.add_post_processing(
-                OutlineEffect, color=(0, 0, 0))  # black outlines
+            self.add_post_processing(OutlineEffect)  # black outlines
             self.add_post_processing(FXAAEffect)  # fast antialiasing
             self.update()
             self.view.status('Enabled effects')
