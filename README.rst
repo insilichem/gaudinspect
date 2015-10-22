@@ -14,13 +14,15 @@ The easiest way to install ``GAUDInspect`` in your computer is using the Anacond
 
 2 - By default, conda will only look for packages in the default repository. We use some custom builds that are distributed in separate (and, some of them, private) channels that must be added to the configuration. Open up a text editor and paste the following lines. 
 
+::
+
     channels:
       - http://klingon.uab.cat/repo/jaime
       - omnia
       - pyzo
       - gabrielelanaro
       - defaults
-
+ 
 
 3 - Then, save the file as ``.condarc`` in your home directory. That will be ``/home/<your_user>/.condarc`` for Linux, and ``C:/Users/<your_user>/.condarc`` for Windows.
 
@@ -28,6 +30,7 @@ The easiest way to install ``GAUDInspect`` in your computer is using the Anacond
 
 5 - When it's done, Conda will instruct you how to activate your new environment with something like this:
 
+::
 
     # Windows
     # To activate this environment, use:
