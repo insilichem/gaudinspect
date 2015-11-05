@@ -46,7 +46,8 @@ class GAUDInspectMenuController(GAUDInspectBaseChildController):
         self.recent.myDataChanged.connect(self.populate_open_recent)
 
     def slots(self):
-        self.configure_dialog = partial(GAUDInspectConfiguration.process, self.view)
+        self.configure_dialog = partial(
+            GAUDInspectConfiguration.process, self.view)
         self.open_file_dialog = self._open_file_dialog()
         self.about_dialog = partial(GAUDInspectAboutDialog, self.view)
         self.queue_dialog = GAUDInspectQueueDialog(self.view)
@@ -54,9 +55,9 @@ class GAUDInspectMenuController(GAUDInspectBaseChildController):
     # Private methods
     def _open_file_dialog(self):
         dialog = QFileDialog(self.view, "Open GAUDI file", os.getcwd(),
-                             "GAUDI files (*.gaudi);; "
-                             "GAUDI output (*.out.gaudi);; "
-                             "GAUDI input (*.in.gaudi);; "
+                             "GAUDI files (*.gaudi*);; "
+                             "GAUDI output (*.gaudi-output);; "
+                             "GAUDI input (*.gaudi-input);; "
                              "All files (*)")
         dialog.setFileMode(QFileDialog.ExistingFile)
         return dialog
@@ -68,19 +69,24 @@ class GAUDInspectMenuController(GAUDInspectBaseChildController):
             for path, timestamp in items[:15]:
                 action = QAction(self._trim(path), self.menu.file.open_recent)
                 self.menu.file.open_recent.addAction(action)
-                action.triggered.connect(partial(self.parent().open_file, path))
+                action.triggered.connect(
+                    partial(self.parent().open_file, path))
 
             self.menu.file.open_recent.addSeparator()
             # Clear All action
             self.menu.file.open_recent.clear_all = QAction(
                 'Clear all', self.menu.file.open_recent)
-            self.menu.file.open_recent.clear_all.triggered.connect(self.recent.clear_all)
-            self.menu.file.open_recent.addAction(self.menu.file.open_recent.clear_all)
+            self.menu.file.open_recent.clear_all.triggered.connect(
+                self.recent.clear_all)
+            self.menu.file.open_recent.addAction(
+                self.menu.file.open_recent.clear_all)
             # Clear Deleted action
             self.menu.file.open_recent.clear_deleted = QAction(
                 'Clear deleted', self.menu.file.open_recent)
-            self.menu.file.open_recent.clear_deleted.triggered.connect(self.recent.clear_deleted)
-            self.menu.file.open_recent.addAction(self.menu.file.open_recent.clear_deleted)
+            self.menu.file.open_recent.clear_deleted.triggered.connect(
+                self.recent.clear_deleted)
+            self.menu.file.open_recent.addAction(
+                self.menu.file.open_recent.clear_deleted)
 
     @staticmethod
     def _trim(s, maxlength=50, start=10):

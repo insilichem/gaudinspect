@@ -19,9 +19,9 @@ class GAUDInspectModel(object):
 
     @classmethod
     def get(self, data):
-        if data.endswith('.out.gaudi'):
+        if data.endswith('.gaudi-output'):
             self.results = model = GAUDInspectModelOut(data)
-        elif data.endswith('.in.gaudi'):
+        elif data.endswith('.gaudi-input'):
             self.newjob = model = GAUDInspectModelIn(data)
         else:
             print('ERROR! Format unknown.')

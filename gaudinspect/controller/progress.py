@@ -95,7 +95,7 @@ class GAUDInspectProgressController(GAUDInspectBaseChildController):
     def open_file(self):
         path, f = QtGui.QFileDialog.getOpenFileName(
             self.view, 'Open GAUDI Input',
-            os.getcwd(), 'GAUDI Input (*.in.gaudi)')
+            os.getcwd(), 'GAUDI Input (*.gaudi-input)')
         self.post_open_file(path)
 
     def open_file_from_dropdown(self, index):
@@ -153,6 +153,6 @@ class GAUDInspectProgressController(GAUDInspectBaseChildController):
         if not exit_code:
             basedir = os.path.dirname(self.tab.input_fld.currentText())
             outputdir = self.inputfile['general']['outputpath']
-            name = self.inputfile['general']['name'] + '.out.gaudi'
+            name = self.inputfile['general']['name'] + '.gaudi-output'
             path = os.path.normpath(os.path.join(basedir, outputdir, name))
             self.parent().open_file(path)

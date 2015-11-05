@@ -31,10 +31,11 @@ class GAUDInspectQueueController(GAUDInspectBaseChildController):
     def add_job(self):
         paths, f = QtGui.QFileDialog.getOpenFileNames(
             self.dialog, 'Choose a GAUDI Input file',
-            os.getcwd(), "*.in.gaudi")
+            os.getcwd(), "*.gaudi-input")
         for path in paths:
             i = self.dialog.table.rowCount()
-            job = GAUDInspectJobHelper(path, index=i, runner=self.parent().progress)
+            job = GAUDInspectJobHelper(
+                path, index=i, runner=self.parent().progress)
             path_item = QtGui.QTableWidgetItem(job.path)
             status_item = QtGui.QTableWidgetItem(job.status)
             self.jobs[path] = job

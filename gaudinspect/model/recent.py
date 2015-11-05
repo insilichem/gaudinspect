@@ -82,7 +82,8 @@ class GAUDInspectModelRecentFiles(QStandardItemModel):
         if size:
             for i in range(size):
                 self.settings.setArrayIndex(i)
-                data = self.settings.value("path"), self.settings.value("timestamp")
+                data = self.settings.value(
+                    "path"), self.settings.value("timestamp")
                 files_and_timestamps.append(data)
             self.settings.endArray()
             files_and_timestamps.sort(key=lambda x: int(x[1]))
@@ -101,11 +102,11 @@ class GAUDInspectModelRecentFiles(QStandardItemModel):
 
     @property
     def input_only(self):
-        return GAUDInspectModelRecentFilesProxy(self, "*.in.gaudi")
+        return GAUDInspectModelRecentFilesProxy(self, "*.gaudi-input")
 
     @property
     def output_only(self):
-        return GAUDInspectModelRecentFilesProxy(self, "*.out.gaudi")
+        return GAUDInspectModelRecentFilesProxy(self, "*.gaudi-output")
 
 
 class GAUDInspectModelRecentFilesProxy(QSortFilterProxyModel):

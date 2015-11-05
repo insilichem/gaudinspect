@@ -47,7 +47,7 @@ class GAUDInspectNewJobController(GAUDInspectBaseChildController):
     def export(self):
         path, format = QtGui.QFileDialog.getSaveFileName(
             self.view, 'Save this GAUDI input',
-            os.getcwd(), "GAUDI Input (*.in.gaudi)")
+            os.getcwd(), "GAUDI Input (*.gaudi-input)")
         if path:
             self.dump()
             self.childmodel.export(path)

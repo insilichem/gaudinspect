@@ -28,7 +28,7 @@ class GAUDInspectController(QtCore.QObject):
     view : ..view.main.GAUDInspectView
         The main view of the application, the only instance of
         `..view.main.GAUDInspectView`.
-    
+
     Attributes
     ----------
     menu : menu.GAUDInspectMenuController
@@ -65,7 +65,7 @@ class GAUDInspectController(QtCore.QObject):
         self.details = None
         self.results = GAUDInspectResultsController(parent=self)
         self.queue = GAUDInspectQueueController(parent=self)
-        
+
         # Start things up
         self._check_defaults()
         self._signals()
@@ -84,13 +84,13 @@ class GAUDInspectController(QtCore.QObject):
 
         temporary : bool, optional
             If `True`, don't add the path to the recent files history.
-        
+
         """
         model = GAUDInspectModel.get(path)
 
-        if path.endswith('.out.gaudi'):
+        if path.endswith('.gaudi-output'):
             self.results.set_model(model)
-        elif path.endswith('.in.gaudi'):
+        elif path.endswith('.gaudi-input'):
             self.newjob.set_model(model)
             self.progress.tab.input_fld.setEditText(path)
         self.view.status('Loaded file {}'.format(path))
