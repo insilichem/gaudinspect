@@ -2,10 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import os
-from datetime import datetime
 from collections import OrderedDict
 
-from PySide import QtGui, QtCore
+from PySide import QtGui
 
 from .base import GAUDInspectBaseChildController
 

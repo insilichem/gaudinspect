@@ -5,7 +5,6 @@ import os
 from functools import partial
 
 from PySide.QtGui import QFileDialog, QAction
-from PySide.QtCore import Qt
 from .base import GAUDInspectBaseChildController
 from ..view.dialogs.configure import GAUDInspectConfiguration
 from ..view.dialogs.about import GAUDInspectAboutDialog
