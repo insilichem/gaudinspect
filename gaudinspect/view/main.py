@@ -4,6 +4,7 @@
 from PySide import QtGui, QtCore, QtOpenGL
 from . import viewer, menu, tabber, stats
 from .resources import images
+import fnmatch
 
 
 class GAUDInspectView(QtGui.QMainWindow):
@@ -63,7 +64,7 @@ class GAUDInspectView(QtGui.QMainWindow):
     # Implement drag&drop
     def dragEnterEvent(self, e):
         if e.mimeData().hasUrls() and \
-                next(str(url.toLocalFile()) for url in e.mimeData().urls()).endswith('.gaudi'):
+           fnmatch.filter((url.toLocalFile() for url in e.mimeData().urls()), "*.gaudi*"):
             e.accept()
             self.setWindowOpacity(0.8)
         else:
