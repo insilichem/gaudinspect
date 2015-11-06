@@ -17,7 +17,7 @@ The easiest way to install ``GAUDInspect`` in your computer is using the Anacond
 .. code-block:: yaml
 
     channels:
-      - http://klingon.uab.cat/repo/jaime
+      - http://klingon.uab.cat/repo/jaime/conda
       - omnia
       - pyzo
       - gabrielelanaro
