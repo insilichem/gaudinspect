@@ -5,7 +5,7 @@
 			"file_regex": "^[ ]*File \"(...*?)\", line ([0-9]*)",
 			"name": "Anaconda Python Builder",
 			"selector": "source.python",
-			"shell_cmd": "/home/jr/.local/anaconda/envs/gaudinspect/bin/python -u \"$file\""
+			"shell_cmd": "C:/Anaconda3/envs/gaudinspect/python -u \"$file\""
 		}
 	],
 	"folders":
@@ -34,7 +34,7 @@
 			"/home/jr/dev/gaudinspect"
 		],
 		"hide_snippets_on_completion": true,
-		"python_interpreter": "/home/jr/.local/anaconda/envs/gaudinspect/bin/python",
+		"python_interpreter": "C:/Anaconda3/envs/gaudinspect/python",
 		"suppress_explicit_completions": true,
 		"suppress_word_completions": true,
 		"validate_imports": true

@@ -129,13 +129,14 @@ class GAUDInspectConfiguration(QtGui.QDialog):
     def save_settings(self):
         self.settings.setValue("flags/configured", True)
         for key in self.settings.allKeys():
-            k1, k2 = [s.lower() for s in key.split("/")]
-            try:
-                val = getattr(self, "{}_{}".format(k1, k2))
-            except AttributeError:
-                pass
-            else:
-                self.settings.setValue(key, yaml.load(val.fld.text()))
+            if not key.startswith("_"):
+                k1, k2 = [s.lower() for s in key.split("/")]
+                try:
+                    val = getattr(self, "{}_{}".format(k1, k2))
+                except AttributeError:
+                    pass
+                else:
+                    self.settings.setValue(key, yaml.load(val.fld.text()))
         self.settings.sync()
 
     def restore_settings(self):
