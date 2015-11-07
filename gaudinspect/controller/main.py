@@ -159,7 +159,7 @@ class GAUDInspectController(QtCore.QObject):
 
     def _configuration_needed_warning(self):
         """
-        The warning message that is displayed if the configuration 
+        The warning message that is displayed if the configuration
         has not been completed. Called by `self._check_firstrun`.
         """
         msg = """GAUDInspect needs some configuration before you can use it.
@@ -168,4 +168,4 @@ Go to Edit - Configuration to fill in the details."""
             self.view, "GAUDInspect Configuration",
             msg, QtGui.QMessageBox.Ok | QtGui.QMessageBox.Ignore)
         if returned == QtGui.QMessageBox.Ok:
-            self.menu._configure()
+            self.menu.configure_dialog()
