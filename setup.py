@@ -17,7 +17,7 @@ def read(*filenames, **kwargs):
             buf.append(f.read())
     return sep.join(buf)
 
-long_description = read('README.md')
+long_description = read('README.rst')
 
 setup(
     name='gaudinspect',
@@ -42,5 +42,8 @@ setup(
         'Operating System :: OS Independent',
         'Topic :: Scientific/Engineering :: Chemistry',
     ],
-    scripts=['scripts/gaudinspect']
+    entry_points='''
+        [console_scripts]
+        gaudinspect=gaudinspect.scripts.main:main
+    '''
 )
