@@ -88,6 +88,7 @@ class GAUDInspectModelRecentFiles(QStandardItemModel):
             self.settings.endArray()
             files_and_timestamps.sort(key=lambda x: int(x[1]))
             return files_and_timestamps
+        self.settings.endArray()
 
     def write_recent_files(self, files_and_timestamps=None):
         if files_and_timestamps is None:

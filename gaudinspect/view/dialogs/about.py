@@ -4,7 +4,7 @@
 from PySide import QtGui
 from PySide.QtCore import Qt
 from ...version import __version__, __author__, __copyright__
-from ..resources import images
+from ..resources import images  # noqa
 
 aboutmsg = """
 <h1>GAUDInspect</h1>

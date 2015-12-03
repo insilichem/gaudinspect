@@ -3,7 +3,7 @@
 
 from PySide import QtGui, QtCore, QtOpenGL
 from . import viewer, menu, tabber, stats
-from .resources import images
+from .resources import images  # noqa unused import, but needed for logo
 
 
 class GAUDInspectView(QtGui.QMainWindow):

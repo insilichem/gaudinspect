@@ -42,5 +42,8 @@ setup(
         'Operating System :: OS Independent',
         'Topic :: Scientific/Engineering :: Chemistry',
     ],
-    scripts=['scripts/gaudinspect']
+    entry_points='''
+        [console_scripts]
+        gaudinspect=gaudinspect.scripts.main:main
+    '''
 )

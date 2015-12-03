@@ -9,6 +9,7 @@ main controller, model and view.
 """
 
 import sys
+
 from PySide.QtGui import QApplication
 from PySide.QtCore import QSettings
 from gaudinspect.controller.main import GAUDInspectController
