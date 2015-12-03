@@ -62,10 +62,11 @@ class GAUDInspectView(QtGui.QMainWindow):
 
     # Implement drag&drop
     def dragEnterEvent(self, e):
-        if e.mimeData().hasUrls() and \
-                next(str(url.toLocalFile()) for url in e.mimeData().urls()).endswith('.gaudi'):
-            e.accept()
-            self.setWindowOpacity(0.8)
+        if e.mimeData().hasUrls():
+            filename = next(str(url.toLocalFile()) for url in e.mimeData().urls())
+            if filename.endswith('.gaudi-input') or filename.endswith('.gaudi-output'):
+                e.accept()
+                self.setWindowOpacity(0.8)
         else:
             e.ignore()
 
