@@ -1,12 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import print_function, division, absolute_import
 
-from PySide import QtGui, QtCore
-from PySide.QtCore import Qt
+
+from PyQt4 import QtGui, QtCore
+from PyQt4.QtCore import Qt
 
 import numpy as np
 
-from chemlab.graphics import QChemlabWidget, colors
+from chemlab.graphics import colors
+from chemlab.graphics.qt import QChemlabWidget
 from chemlab.graphics.renderers import BallAndStickRenderer, AtomRenderer
 from chemlab.graphics.postprocessing import SSAOEffect, OutlineEffect, FXAAEffect
 from chemlab.io import datafile
@@ -28,7 +31,7 @@ class GAUDInspectViewViewer(QChemlabWidget):
     }
 
     def __init__(self, context, view=None):
-        super().__init__(context)
+        super(GAUDInspectViewViewer, self).__init__(context)
         self.view = view
         self.molecules = {}
         context.makeCurrent()
@@ -42,8 +45,10 @@ class GAUDInspectViewViewer(QChemlabWidget):
         self.background_color = self._bgcolor_from_settings()
 
     def _bgcolor_from_settings(self):
-        return [float(i) for i in QtCore.QSettings().value(
-            "viewer/backgroundcolor")] + [0]
+        bgcolor = QtCore.QSettings().value("viewer/backgroundcolor")
+        if not bgcolor:
+            bgcolor = "000"
+        return [float(i) for i in bgcolor] + [0]
 
     # Controller methods
     def add_molecule(self, path, renderer='ballandstick',
@@ -53,8 +58,8 @@ class GAUDInspectViewViewer(QChemlabWidget):
         except KeyError:
             mol = self.molecules[path] = datafile(path).read('molecule')
             mol.renderer = self.RENDERERS[renderer](
-                self, mol.r_array, mol.type_array, mol.bonds,
-                color_scheme=self.COLORS[color])
+                self, mol.r_array, mol.type_array, mol.bonds)
+                # color_scheme=self.COLORS[color])
         self.renderers.append(mol.renderer)
         self.update()
 

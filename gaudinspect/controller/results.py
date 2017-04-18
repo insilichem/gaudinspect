@@ -1,11 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function, division, absolute_import
 from itertools import cycle
 import operator
 
-from PySide.QtCore import Qt
-from PySide import QtGui
+from PyQt4.QtCore import Qt
+from PyQt4 import QtGui
 
 from .base import GAUDInspectBaseChildController
 
@@ -13,7 +14,7 @@ from .base import GAUDInspectBaseChildController
 class GAUDInspectResultsController(GAUDInspectBaseChildController):
 
     def __init__(self, childmodel=None, renderer='ballandstick', color='default', **kwargs):
-        super().__init__(**kwargs)
+        super(GAUDInspectResultsController, self).__init__(**kwargs)
         self.tabindex = 3
         self.tab = self.view.tabber.tabs[self.tabindex]
         self.table = self.tab.table
@@ -111,8 +112,7 @@ class GAUDInspectResultsController(GAUDInspectBaseChildController):
                     item] = self.childmodel.parse_zip(item)
             for m, color in zip(mol2, cycle(self.colors)):
                 mols.append(m)
-                self.view.viewer.add_molecule(
-                    m, renderer=renderer, color=color)
+                self.view.viewer.add_molecule(m, renderer=renderer)
         if mols:
             self.view.viewer.focus(molecules=mols)
 
@@ -147,7 +147,7 @@ class CustomSortFilterProxyModel(QtGui.QSortFilterProxyModel):
     """ A proxy model to fix numerical sorting """
 
     def __init__(self, parent=None):
-        super().__init__(parent)
+        super(CustomSortFilterProxyModel, self).__init__(parent)
         self.functions = {
             '>': operator.gt,
             '>=': operator.ge,

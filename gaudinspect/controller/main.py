@@ -1,6 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function, division, absolute_import
+
 from .results import GAUDInspectResultsController
 from .newjob import GAUDInspectNewJobController
 from .menu import GAUDInspectMenuController
@@ -10,7 +12,7 @@ from ..model.main import GAUDInspectModel
 
 from .. import configuration
 
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 
 
 class GAUDInspectController(QtCore.QObject):
@@ -20,7 +22,7 @@ class GAUDInspectController(QtCore.QObject):
 
     Parameters
     ----------
-    app : PySide.QtGui.QApplication
+    app : PyQt4.QtGui.QApplication
         The QApplication instance that runs all the GUI.
     model : ..model.main.GAUDInspectModel
         The main model of the application, the only instance of
@@ -52,7 +54,7 @@ class GAUDInspectController(QtCore.QObject):
     """
 
     def __init__(self, model, view, app=None):
-        super().__init__(app)
+        super(GAUDInspectController, self).__init__(app)
         self.app = app
         self.model = model
         self.view = view

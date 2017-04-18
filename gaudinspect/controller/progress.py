@@ -1,10 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function, division, absolute_import
 import os
 import yaml
 
-from PySide import QtCore, QtGui
+from PyQt4 import QtCore, QtGui
 
 from .base import GAUDInspectBaseChildController
 
@@ -12,7 +13,7 @@ from .base import GAUDInspectBaseChildController
 class GAUDInspectProgressController(GAUDInspectBaseChildController):
 
     def __init__(self, recent_model=None, **kwargs):
-        super().__init__(**kwargs)
+        super(GAUDInspectProgressController, self).__init__(**kwargs)
         self.tabindex = 1
         self.tab = self.view.tabber.tabs[self.tabindex]
         self.recent = recent_model
@@ -37,26 +38,31 @@ class GAUDInspectProgressController(GAUDInspectBaseChildController):
         self.process.finished.connect(self.process_finished)
 
     def run(self, path=None):
+
         if path is None:
             path = self.tab.input_fld.currentText()
         else:
             self.tab.input_fld.setEditText(path)
 
-        settings = QtCore.QSettings()
-        chimera = settings.value("paths/chimera")
-        gaudi = os.path.join(settings.value("paths/gaudi"), "launch.py")
-        args = ['--debug', '--nogui', '--silent', '--script',
-                "{} {}".format(gaudi, path)]
+        # settings = QtCore.QSettings()
+        # chimera = settings.value("paths/chimera")
+        # gaudi = os.path.join(settings.value("paths/gaudi"), "launch.py")
+        # args = ['--debug', '--nogui', '--silent', '--script',
+        #         "{} {}".format(gaudi, path)]
 
+        exe = "gaudi"
+        args = ['run', path]
+        print("Running", path)
         self.process = QtCore.QProcess(self.view)
         self.connect_process_signals()
-        self.process.start(chimera, args)
+        self.process.start(exe, args)
 
         return self.process
 
     def report(self):
         # Raw output
         line = str(self.process.readAllStandardOutput())
+        print(line)
         self.tab.textbox.append(line)
         # Tabulated data
         self.add_row(*self.parse_output(line))
@@ -110,6 +116,7 @@ class GAUDInspectProgressController(GAUDInspectBaseChildController):
 
     def process_started(self):
         # After GAUDI started
+        print("Process started...")
         path = self.tab.input_fld.currentText()
         with open(path) as f:
             self.inputfile = yaml.load(f)

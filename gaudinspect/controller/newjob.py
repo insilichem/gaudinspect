@@ -1,6 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function, division, absolute_import
 import os
 import random
 import string
@@ -8,9 +9,10 @@ import yaml
 from copy import deepcopy
 from functools import partial
 
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 
 from .base import GAUDInspectBaseChildController
+from ..model.input import GAUDInspectModelIn
 from ..view.dialogs.extension import GAUDInspectConfigureExtension
 from ..view.dialogs.advanced import GAUDInspectAdvancedOptionsDialog
 from ..configuration import ADVANCED_OPTIONS_DEFAULT
@@ -25,10 +27,10 @@ class GAUDInspectNewJobController(GAUDInspectBaseChildController):
         'general_outputpath_field': ('general', 'outputpath')
     }
 
-    file_ready = QtCore.Signal(str)
+    file_ready = QtCore.pyqtSignal(str)
 
     def __init__(self, childmodel=None, **kwargs):
-        super().__init__(**kwargs)
+        super(GAUDInspectNewJobController, self).__init__(**kwargs)
         self.tabindex = 0
         self.tab = self.view.tabber.tabs[self.tabindex]
         self.advanced_options = deepcopy(ADVANCED_OPTIONS_DEFAULT)
@@ -38,6 +40,8 @@ class GAUDInspectNewJobController(GAUDInspectBaseChildController):
         self.signals()
         if childmodel:
             self.set_model(childmodel)
+        else:
+            self.childmodel = GAUDInspectModelIn()
 
     def set_model(self, model):
         self.childmodel = model
@@ -132,7 +136,7 @@ class GAUDInspectNewJobController(GAUDInspectBaseChildController):
                 value = self.advanced_options.get(k, [''])[0]
                 if value:
                     self.childmodel.gaudidata['ga'][k] = yaml.load(str(value))
-            self.childmodel.gaudidata['similarity']['type'] = \
+            self.childmodel.gaudidata['similarity']['module'] = \
                 self.advanced_options['similarity'][0]
             self.childmodel.gaudidata['similarity']['args'] = \
                 self.advanced_options['similarity_args'][0]

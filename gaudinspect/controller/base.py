@@ -6,7 +6,8 @@ This module provides base classes that all controllers must inherit.
 
 """
 
-from PySide.QtCore import QObject
+from __future__ import print_function, division, absolute_import
+from PyQt4.QtCore import QObject
 
 
 class GAUDInspectBaseChildController(QObject):
@@ -32,9 +33,9 @@ class GAUDInspectBaseChildController(QObject):
 
     Attributes
     ----------
-    app : PySide.QtGui.QApplication
+    app : PyQt4.QtGui.QApplication
         Shortcut to the QApplication instance that runs all the GUI.
-    view : PySide.QtGui.QMainWindow
+    view : PyQt4.QtGui.QMainWindow
         The main view of the application, extracted directly from the parent
         controller.
     model : object
@@ -44,14 +45,14 @@ class GAUDInspectBaseChildController(QObject):
     """
 
     def __init__(self, parent=None, tabindex=None, *args, **kwargs):
-        super().__init__(parent)
+        super(GAUDInspectBaseChildController, self).__init__(parent)
         self.app = self.parent().app
         self.view = self.parent().view
         self.model = self.parent().model
         # Optional attributes
         self.tabindex = None
         self.childmodel = None
-    
+
     # Standard API
     def set_model(self, model):
         """

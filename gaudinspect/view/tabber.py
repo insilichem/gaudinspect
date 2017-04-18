@@ -1,7 +1,9 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import print_function, division, absolute_import
 
-from PySide import QtGui
+
+from PyQt4 import QtGui
 from .tabs import newjob, progress, details, results
 
 

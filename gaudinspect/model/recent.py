@@ -1,10 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import print_function, division, absolute_import
+
 
 from os.path import isfile
 import time
-from PySide.QtCore import QSettings, Qt, Signal
-from PySide.QtGui import QSortFilterProxyModel, QStandardItemModel, QStandardItem
+from PyQt4.QtCore import QSettings, Qt, pyqtSignal as Signal
+from PyQt4.QtGui import QSortFilterProxyModel, QStandardItemModel, QStandardItem
 
 
 class GAUDInspectModelRecentFiles(QStandardItemModel):
@@ -13,7 +15,7 @@ class GAUDInspectModelRecentFiles(QStandardItemModel):
     myDataChanged = Signal()
 
     def __init__(self):
-        super().__init__(0, 1)
+        super(GAUDInspectModelRecentFiles, self).__init__(0, 1)
         self.settings = QSettings()
         self.populate()
 
@@ -86,7 +88,7 @@ class GAUDInspectModelRecentFiles(QStandardItemModel):
                     "path"), self.settings.value("timestamp")
                 files_and_timestamps.append(data)
             self.settings.endArray()
-            files_and_timestamps.sort(key=lambda x: int(x[1]))
+            files_and_timestamps.sort(key=lambda x: x[1])
             return files_and_timestamps
         self.settings.endArray()
 
@@ -113,6 +115,6 @@ class GAUDInspectModelRecentFiles(QStandardItemModel):
 class GAUDInspectModelRecentFilesProxy(QSortFilterProxyModel):
 
     def __init__(self, model, wildcard, *args, **kwargs):
-        super().__init__()
+        super(GAUDInspectModelRecentFilesProxy, self).__init__()
         self.setSourceModel(model)
         self.setFilterWildcard(wildcard)

@@ -1,20 +1,22 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import print_function, division, absolute_import
 
-from PySide import QtGui, QtCore, QtOpenGL
+
+from PyQt4 import QtGui, QtCore, QtOpenGL
 from . import viewer, menu, tabber, stats
 from .resources import images  # noqa unused import, but needed for logo
 
 
 class GAUDInspectView(QtGui.QMainWindow):
 
-    fileDropped = QtCore.Signal(str)
+    fileDropped = QtCore.pyqtSignal(str)
 
     def __init__(self, app=None):
         super(GAUDInspectView, self).__init__()
         self.app = app
         self.setWindowIcon(QtGui.QIcon(':/logo.png'))
-        self.glcontext = QtOpenGL.QGLContext(QtOpenGL.QGLFormat())
+        self.glcontext = QtOpenGL.QGLContext(QtOpenGL.QGLFormat(), None)
         self.setAcceptDrops(True)
 
         self.initUI()

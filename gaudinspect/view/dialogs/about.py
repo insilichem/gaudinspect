@@ -1,14 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import print_function, division, absolute_import
 
-from PySide import QtGui
-from PySide.QtCore import Qt
+
+from PyQt4 import QtGui
+from PyQt4.QtCore import Qt
 from ...version import __version__, __author__, __copyright__
 from ..resources import images  # noqa
 
 aboutmsg = """
 <h1>GAUDInspect</h1>
-<i>A GUI for GAUDIasm</i><br />
+<i>A GUI for GaudiMM</i><br />
 <p width="250">
     Version: {}<br />
     Authors: {}<br />
@@ -20,7 +22,7 @@ aboutmsg = """
 class GAUDInspectAboutDialog(QtGui.QDialog):
 
     def __init__(self, parent=None, *args, **kwargs):
-        super().__init__(parent=parent)
+        super(GAUDInspectAboutDialog, self).__init__(parent=parent)
         self.setWindowTitle("About GAUDInspect")
         self.setAttribute(Qt.WA_DeleteOnClose)
         self.initUI()

@@ -1,10 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function, division, absolute_import
 import os
 from functools import partial
 
-from PySide.QtGui import QFileDialog, QAction
+from PyQt4.QtGui import QFileDialog, QAction
 from .base import GAUDInspectBaseChildController
 from ..view.dialogs.configure import GAUDInspectConfiguration
 from ..view.dialogs.about import GAUDInspectAboutDialog
@@ -14,7 +15,7 @@ from ..view.dialogs.queue import GAUDInspectQueueDialog
 class GAUDInspectMenuController(GAUDInspectBaseChildController):
 
     def __init__(self, recent_model=None, **kwargs):
-        super().__init__(**kwargs)
+        super(GAUDInspectMenuController, self).__init__(**kwargs)
         self.recent = recent_model
 
         self.menu = self.view.menu
@@ -30,8 +31,7 @@ class GAUDInspectMenuController(GAUDInspectBaseChildController):
         self.menu.file.open.triggered.connect(self.open_file_dialog.exec_)
         self.menu.file.exit.triggered.connect(self.app.exit)
 
-        self.menu.edit.configuration.triggered.connect(
-            GAUDInspectConfiguration.process)
+        self.menu.edit.configuration.triggered.connect(self.configure_dialog)
 
         self.menu.viewer.enable_fx.triggered.connect(
             self.view.viewer.enable_effects)

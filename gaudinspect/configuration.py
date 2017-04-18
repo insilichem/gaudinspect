@@ -1,5 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import print_function, division, absolute_import
+
 
 """
 This file holds the default parameters of the application configuration,
@@ -69,6 +71,6 @@ ADVANCED_OPTIONS_DEFAULT = OrderedDict([
         'Ligand, 0.5',
         'Positional arguments of similarity function']),
     ('similarity_kwargs', [
-        '',
+        '{}',
         'Optional arguments of similarity function'])
 ])

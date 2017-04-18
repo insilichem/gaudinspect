@@ -1,15 +1,17 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import print_function, division, absolute_import
+
 
 from copy import deepcopy
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 from ...configuration import ADVANCED_OPTIONS_DEFAULT
 
 
 class GAUDInspectAdvancedOptionsDialog(QtGui.QDialog):
 
     def __init__(self, parent=None, data=None):
-        super().__init__(parent=parent)
+        super(GAUDInspectAdvancedOptionsDialog, self).__init__(parent=parent)
 
         self.advanced_options = {}
         self.setWindowTitle("Advanced project settings - GAUDInspect")
@@ -38,7 +40,7 @@ class GAUDInspectAdvancedOptionsDialog(QtGui.QDialog):
         self.layout.addWidget(self.buttons)
 
     def showEvent(self, event):
-        super().showEvent(event)
+        super(GAUDInspectAdvancedOptionsDialog, self).showEvent(event)
         bw, bh = self.buttons.size().toTuple()
         tw, th = self.table.size().toTuple()
         self.resize(bw + 24, bh + th + 24)

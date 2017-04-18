@@ -1,12 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import print_function, division, absolute_import
+
 
 # Python
 import os
 import tempfile
 import yaml
 import zipfile
-from PySide.QtGui import QStandardItemModel, QStandardItem
+from PyQt4.QtGui import QStandardItemModel, QStandardItem
 
 
 class GAUDInspectModelOut(QStandardItemModel):
@@ -26,7 +28,7 @@ class GAUDInspectModelOut(QStandardItemModel):
         super(GAUDInspectModelOut, self).__init__()
         self.path = path
         self.basedir = os.path.dirname(path)
-        self.tempdir = tempfile.mkdtemp('gaudiview')
+        self.tempdir = tempfile.mkdtemp('gaudinspect')
         self.parse()
 
     def parse(self):

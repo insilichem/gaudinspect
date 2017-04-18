@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+from __future__ import print_function, division, absolute_import
+
 
 """
 The main launcher of the GUI app. It does nothing fancy, except
@@ -10,18 +12,18 @@ main controller, model and view.
 
 import sys
 
-from PySide.QtGui import QApplication
-from PySide.QtCore import QSettings
+from PyQt4.QtGui import QApplication
+from PyQt4.QtCore import QSettings
 from gaudinspect.controller.main import GAUDInspectController
 from gaudinspect.model.main import GAUDInspectModel
 from gaudinspect.view.main import GAUDInspectView
 
 
 def main():
-    try:
-        app = QApplication(sys.argv)
-    except RuntimeError:
+    if QApplication.instance():
         app = QApplication.instance()
+    else:
+        app = QApplication(sys.argv)
 
     app.settings = QSettings()
 

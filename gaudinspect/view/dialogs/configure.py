@@ -1,17 +1,19 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import print_function, division, absolute_import
+
 
 import os
 import yaml
 
-from PySide import QtGui, QtCore
+from PyQt4 import QtGui, QtCore
 from ... import configuration
 
 
 class GAUDInspectConfiguration(QtGui.QDialog):
 
     def __init__(self, parent=None):
-        super().__init__(parent=parent)
+        super(GAUDInspectConfiguration, self).__init__(parent=parent)
 
         self.setWindowTitle("Edit configuration - GAUDInspect")
         self.setModal(True)
@@ -20,7 +22,7 @@ class GAUDInspectConfiguration(QtGui.QDialog):
         self.load_settings()
 
     def showEvent(self, event):
-        super().showEvent(event)
+        super(GAUDInspectConfiguration, self).showEvent(event)
         self.adjustSize()
 
     def initUI(self):

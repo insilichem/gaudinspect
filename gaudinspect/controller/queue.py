@@ -1,10 +1,11 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+from __future__ import print_function, division, absolute_import
 import os
 from collections import OrderedDict
 
-from PySide import QtGui
+from PyQt4 import QtGui
 
 from .base import GAUDInspectBaseChildController
 
@@ -12,7 +13,7 @@ from .base import GAUDInspectBaseChildController
 class GAUDInspectQueueController(GAUDInspectBaseChildController):
 
     def __init__(self, **kwargs):
-        super().__init__(**kwargs)
+        super(GAUDInspectQueueController, self).__init__(**kwargs)
         self.dialog = self.parent().menu.queue_dialog
         self.table = self.dialog.table
         self.jobs = OrderedDict()
@@ -118,7 +119,7 @@ class GAUDInspectJobHelper(object):
     ABORTED = 'Aborted'
 
     def __init__(self, path, status=None, runner=None, index=None):
-        super().__init__()
+        super(GAUDInspectJobHelper, self).__init__()
         self.path = path
         self.status = self.PENDING if status is None else status
         self.runner = runner

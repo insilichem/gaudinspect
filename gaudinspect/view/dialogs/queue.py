@@ -1,13 +1,15 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
+from __future__ import print_function, division, absolute_import
 
-from PySide import QtGui
+
+from PyQt4 import QtGui
 
 
 class GAUDInspectQueueDialog(QtGui.QDialog):
 
     def __init__(self, parent=None):
-        super().__init__(parent=parent)
+        super(GAUDInspectQueueDialog, self).__init__(parent=parent)
 
         self.setWindowTitle("Job Queue - GAUDInspect")
         self.setModal(False)
@@ -15,13 +17,13 @@ class GAUDInspectQueueDialog(QtGui.QDialog):
         self.signals()
 
     def show(self):
-        super().show()
+        super(GAUDInspectQueueDialog, self).show()
         self.activateWindow()
         self.raise_()
         self.setFocus()
 
     def showEvent(self, event):
-        super().showEvent(event)
+        super(GAUDInspectQueueDialog, self).showEvent(event)
         self.adjustSize()
 
     def initUI(self):
