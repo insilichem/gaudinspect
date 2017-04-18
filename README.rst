@@ -12,25 +12,20 @@ The easiest way to install ``GAUDInspect`` in your computer is using the Anacond
 
 1 - First, install `Miniconda for Python 3 <http://conda.pydata.org/miniconda.html>`_. Instructions can be found `here <http://conda.pydata.org/docs/install/quick.html#miniconda-quick-install-requirements>`_.
 
-2 - By default, conda will only look for packages in the default repository. We use some custom builds that are distributed in separate (and, some of them, private) channels that must be added to the configuration. Open up a text editor and paste the following lines. 
+2 - By default, conda will only look for packages in the ``defaults`` repository. You need to add some extra ones with:
 
-.. code-block:: yaml
-
-    channels:
-      - http://klingon.uab.cat/repo/jaime/conda
-      - omnia
-      - pyzo
-      - gabrielelanaro
-      - defaults
+.. code-block::
+    
+    conda config add --channels insilichem
+    conda config add --channels omnia
+    conda config add --channels gabrielelanaro
  
 
-3 - Then, save the file as ``.condarc`` in your home directory. That will be ``/home/<your_user>/.condarc`` for Linux, and ``C:/Users/<your_user>/.condarc`` for Windows.
+3 - Create a new environment to deploy GAUDInspect. Since you have already the channels, it's as easy as typing ``conda create -n <name> gaudinspect``. Choose any name (like, why not, ``gaudinspect``). For example, ``conda create -n gaudinspect gaudinspect``. Conda will take care of resolving the dependencies, which can involve some downloading. 
 
-4 - Create a new environment to deploy GAUDInspect. Since you have already the channels, it's as easy as typing ``conda create -n <name> gaudinspect``. Choose any name (like, why not, ``gaudinspect``). For example, ``conda create -n gaudinspect gaudinspect``. Conda will take care of resolving the dependencies, which can involve some downloading. 
+4 - When it's done, ``conda`` will instruct you how to activate your new environment with something like this:
 
-5 - When it's done, Conda will instruct you how to activate your new environment with something like this:
-
-.. code-block:: yaml
+.. code-block::
 
     # Windows
     # To activate this environment, use:
@@ -42,9 +37,18 @@ The easiest way to install ``GAUDInspect`` in your computer is using the Anacond
     #
 
 
-6 - Activate the environment and run ``gaudinspect``, which should bring up the GUI promting about the configuration.
+5 - Activate the environment and run ``gaudinspect``!
 
 Configuration
 -------------
 
-GAUDInspect needs some small configuration to run GAUDI jobs. Mainly, the path to ``GAUDI`` and the path to ``UCSF Chimera`` binary. If you have not installed GAUDI yet, please refer its `installation guide <https://bitbucket.org/jrgp/gaudi>`_.
+*(In the future this won't be needed)*
+
+GAUDInspect needs some small configuration to run GaudiMM jobs. Mainly, the path to ``gaudi`` and ``chimera`` binaries. If they are properly installed, you can obtain these values with:
+
+.. code-block::
+
+    which gaudi
+    which chimera
+
+If you have not installed GaudiMM yet, please refer its `installation guide <http://gaudi.readthedocs.io/en/latest/installation.html>`_.

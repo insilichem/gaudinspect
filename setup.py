@@ -22,7 +22,7 @@ long_description = read('README.rst')
 setup(
     name='gaudinspect',
     version=gaudinspect.__version__,
-    url='https://bitbucket.org/jrgp/gaudinspect',
+    url='https://github.com/insilichem/gaudinspect',
     license='Free For Educational Use',
     author='Jaime Rodriguez-Guerra Pedregal',
     author_email='jaime.rogue@gmail.com',
