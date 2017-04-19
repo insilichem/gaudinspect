@@ -5,6 +5,12 @@ A GUI for GAUDI input creation and output inspection.
 
 *It will also allow to visually inspect the optimization process step-by-step to know how the system will behave during the essay.*
 
+.. image:: docs/data/gaudinspect_linux.jpg
+  :alt: GAUDInspect GUI under Ubuntu 14.04
+
+.. image:: docs/data/gaudinspect_win.png
+  :alt: GAUDInspect GUI under Windows 10
+
 Installation
 ------------
 
