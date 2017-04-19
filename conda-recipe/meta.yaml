@@ -1,0 +1,33 @@
+package:
+  name: gaudinspect
+  version: "0.0.1"
+
+about:
+  home: https://github.com/insilichem/gaudinspect
+  license: Free For Educational Use
+  summary: "A full GUI for launching GaudiMM jobs, analyze their progress, and examine the results."
+
+source:
+  git_url: https://github.com/insilichem/gaudinspect.git
+  git_tag: v0.0.1
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - distribute # [py27]
+    - sip
+    - pyqt ==4.11.3
+    - cython
+
+  run:
+    - python
+    - setuptools
+    - pyyaml
+    - chemlab
+    - pillow
+    - matplotlib
+
+test:
+  imports:
+    - gaudinspect

@@ -16,9 +16,9 @@ The easiest way to install ``GAUDInspect`` in your computer is using the Anacond
 
 .. code-block::
     
-    conda config add --channels insilichem
-    conda config add --channels omnia
-    conda config add --channels gabrielelanaro
+    conda config --add channels insilichem
+    conda config --add channels omnia
+    conda config --add channels gabrielelanaro
  
 
 3 - Create a new environment to deploy GAUDInspect. Since you have already the channels, it's as easy as typing ``conda create -n <name> gaudinspect``. Choose any name (like, why not, ``gaudinspect``). For example, ``conda create -n gaudinspect gaudinspect``. Conda will take care of resolving the dependencies, which can involve some downloading. 
